@@ -9,23 +9,15 @@ using namespace std;
 const int TABLE_SIZE = 101;
 const int M = 1000000;
 
-void addtoR(vector<int>* v, int d);
-
-void deleteR(vector<int>* v);
-
-int FindHashValue(vector<double>* concVector);
-
 struct Element
 {
-  int value;
-  int size;
-  vector<double> gridCurve;
+  int ID;
+  vector<double>* gridCurve;
 
-  Element(int v, int t, vector<double>* g)
+  Element(int id, vector<double>* g)
   {
-    this->value = v;
-    this->size = t;
-    this->gridCurve = *g;
+    this->ID = id;
+    this->gridCurve = g;
   }
 };
 
@@ -98,9 +90,9 @@ public:
         {
           int hash = (key % M % TABLE_SIZE);
           cout << "******************************" << endl;
-          for (int i = 1; i < table[hash]->getElement()->size; i++)
+          for (int i = 1; i < table[hash]->getElement()->gridCurve->size(); i++)
           {
-            cout << table[hash]->getElement()->gridCurve[i] << " ";
+            cout << table[hash]->getElement()->gridCurve->size() << " ";
           }
           cout << endl;
           cout << "WEW LAD" << endl;
@@ -110,9 +102,9 @@ public:
           {
             cout << "IS NEXT-> NULL???? NOT IF I CAME HERE:: " << endl;
             curr = curr->next;
-            for (int i = 1; i < curr->getElement()->size; i++)
+            for (int i = 1; i < curr->getElement()->gridCurve->size(); i++)
             {
-              cout << curr-> getElement()->gridCurve[i] << " ";
+              cout << curr-> getElement()->gridCurve->size() << " ";
             }
             cout << endl;
           }
@@ -126,14 +118,13 @@ public:
           cout << "This points to an empty bucket!" << endl;
         }
         int hash = (key % M % TABLE_SIZE);
-        cout << table[hash]->getElement()->gridCurve[0] << endl;
+        cout << table[hash]->getElement()->gridCurve->size() << endl;
         HashEntry* curr;
         curr = table[hash];
         while (curr->next)
         {
           curr = curr->next;
-          for(int i = 0 ; i < 2 ; i ++)
-          cout << curr->getElement()->gridCurve[i] << endl;
+          cout << curr->getElement()->gridCurve[0][0] << endl;
         }
       }
 

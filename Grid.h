@@ -5,6 +5,12 @@
 #include "HelpClasses.h"
 #include <vector>
 
+void addtoR(vector<int>* v, int d);
+
+void deleteR(vector<int>* v);
+
+int FindHashValue(vector<double>* concVector);
+
 int selectUniformlyRandomT(int dimension);
 
 double findMinPointInAnyAxis(int dimension, int axis, double curvePoint, double ** displacedGrid);
