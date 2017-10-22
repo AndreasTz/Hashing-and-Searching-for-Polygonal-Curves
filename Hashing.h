@@ -2,6 +2,7 @@
 #define HASHING__H
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -9,13 +10,13 @@ struct Element
 {
   int value;
   int size;
-  double* gridCurve;
+  vector<double> gridCurve;
 
-  Element(int v, int t, double* g)
+  Element(int v, int t, vector<double>* g)
   {
     this->value = v;
     this->size = t;
-    this->gridCurve = g;
+    this->gridCurve = *g;
   }
 };
 
@@ -118,13 +119,14 @@ public:
           cout << "This points to an empty bucket!" << endl;
         }
         int hash = (key % TABLE_SIZE);
-        cout << table[hash]->getElement()->value << endl;
+        cout << table[hash]->getElement()->gridCurve[0] << endl;
         HashEntry* curr;
         curr = table[hash];
         while (curr->next)
         {
           curr = curr->next;
-          cout << curr->getElement()->value << endl;
+          for(int i = 0 ; i < 2 ; i ++)
+          cout << curr->getElement()->gridCurve[i] << endl;
         }
       }
 
