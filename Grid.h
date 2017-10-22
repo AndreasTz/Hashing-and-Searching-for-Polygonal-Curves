@@ -21,4 +21,8 @@ void concatAnotherGridCurve(vector<double> *singleVecNoDublicates, vector<double
 
 void selectT_Vector(vector<double>* t, int dimension);
 
+void addtoR(vector<int>* v, int d);
+
+void deleteR(vector<int>* v);
+
 #endif

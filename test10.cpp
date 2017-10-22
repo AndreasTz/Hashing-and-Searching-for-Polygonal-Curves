@@ -216,7 +216,15 @@ int main(int argc , char const *argv[]){
 			cout << "type of Hash Choice: " << details->typeOfHashChoice << endl;
 
 			//MAIN JOB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      vector<double**> gridVector;
 
+      /*********************************************************
+      //for each curve we do
+      gridVector.push_back(double**array);
+      //we print or access like:
+      gridVector[i][n][m] //i = curveID - 1, n/m = diastaseis
+      *********************************************************/
+      
 			HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
 
 		  for(int i = 0; i < details->numberOfHashingArrays ; i++){

@@ -4,6 +4,7 @@
 
 #include "Hashing.h"
 #include "HelpClasses.h"
+#include "Grid.h"
 
 using namespace std;
 
@@ -259,5 +260,18 @@ void operation(double dimension, int R, double ** curvePoints , int noofPointsIn
     HashArray[l]->put(l, hashElement); // eisagwgi se hash table*/
   }
   free(Grid);
+}
 
+void addtoR(vector<int>* v, int d)
+{
+  while (d)
+  {
+    v->push_back((rand() / (RAND_MAX + 1.0)));
+    d--;
+  }
+}
+
+void deleteR(vector<int>* v)
+{
+  v->clear();
 }
