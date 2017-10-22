@@ -13,7 +13,7 @@ void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printabl
 
 void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int noofPointsInCurve);
 
-void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details);
+void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
 
 void printVector(vector<double>* t);
 
@@ -21,8 +21,8 @@ void concatAnotherGridCurve(vector<double> *singleVecNoDublicates, vector<double
 
 void selectT_Vector(vector<double>* t, int dimension);
 
-void addtoR(vector<int>* v, int d);
+//void addtoR(vector<int>* v, int d);
 
-void deleteR(vector<int>* v);
+//void deleteR(vector<int>* v);
 
 #endif

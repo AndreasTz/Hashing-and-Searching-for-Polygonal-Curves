@@ -18,7 +18,7 @@ Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mi
 
 	!!Aksizei na anaferthei, curveIDVec :: vector pou krataei ola ta id twn kampulwn pou diavazoyme
 */
-void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetails * const details){
+void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v){
 
 		ifstream myfile;
 		myfile.open(Filename.c_str());
@@ -92,7 +92,7 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
 			}
     }
 
-    operation(dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details);
+    operation(dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
 
     nextLineOfFile;
 		getline(myfile, nextLineOfFile);

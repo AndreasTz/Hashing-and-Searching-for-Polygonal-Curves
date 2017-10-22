@@ -216,7 +216,8 @@ int main(int argc , char const *argv[]){
 			cout << "type of Hash Choice: " << details->typeOfHashChoice << endl;
 
 			//MAIN JOB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      vector<double**> gridVector;
+      //vector<double**> gridVector;
+      vector<vector<double>> gridVector;
 
       /*********************************************************
       //for each curve we do
@@ -224,7 +225,7 @@ int main(int argc , char const *argv[]){
       //we print or access like:
       gridVector[i][n][m] //i = curveID - 1, n/m = diastaseis
       *********************************************************/
-      
+
 			HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
 
 		  for(int i = 0; i < details->numberOfHashingArrays ; i++){
@@ -234,7 +235,7 @@ int main(int argc , char const *argv[]){
 			cout << "Molis dimiourgithikan L Hash Arrays <3 " << endl;
 
 
-			readingFromFile(details->inputFile , HashArray, details);
+			readingFromFile(details->inputFile , HashArray, details, &gridVector);
 
 
 

@@ -6,6 +6,37 @@
 
 using namespace std;
 
+vector<int> rVector;
+
+void addtoR(vector<int>* v, int d)
+{
+  while (d)
+  {
+    v->push_back((rand() / (RAND_MAX + 1.0)));
+    d--;
+  }
+}
+
+void deleteR(vector<int>* v)
+{
+  v->clear();
+}
+
+int FindHashValue(vector<double>* concVector)
+{
+  if (rVector.size() < concVector->size())
+  {
+    addtoR(&rVector, (rVector.size() - concVector->size()));
+  }
+  int sumKey = 0;
+  for (int i = 0; i < concVector->size(); i++)
+  {
+    sumKey += (concVector->back() * rVector[i]);
+    concVector->pop_back();
+  }
+  return sumKey;
+}
+
 struct Element
 {
   int value;
@@ -51,6 +82,7 @@ public:
 };
 
 const int TABLE_SIZE = 101;
+const int M = 1000000;
 
 class HashMap {
 
@@ -70,7 +102,7 @@ public:
 
       Element* getFirstElement(int key)
       {
-            int hash = (key % TABLE_SIZE);
+            int hash = (key % M % TABLE_SIZE);
             if (table[hash] != NULL)
             {
               return table[hash]->getElement();
@@ -79,7 +111,7 @@ public:
 
       int isEmpty(int key)
       {
-        int hash = (key % TABLE_SIZE);
+        int hash = (key % M % TABLE_SIZE);
         if (table[hash] == NULL) return 1;
         return 0;
       }
@@ -89,7 +121,7 @@ public:
         if (isEmpty(key)) cout << "This point to an empty bucket!" << endl;
         else
         {
-          int hash = (key % TABLE_SIZE);
+          int hash = (key % M % TABLE_SIZE);
           cout << "******************************" << endl;
           for (int i = 1; i < table[hash]->getElement()->size; i++)
           {
@@ -118,7 +150,7 @@ public:
         {
           cout << "This points to an empty bucket!" << endl;
         }
-        int hash = (key % TABLE_SIZE);
+        int hash = (key % M % TABLE_SIZE);
         cout << table[hash]->getElement()->gridCurve[0] << endl;
         HashEntry* curr;
         curr = table[hash];
@@ -132,13 +164,13 @@ public:
 
       HashEntry* getBucket(int key)
       {
-        int hash = (key % TABLE_SIZE);
+        int hash = (key % M % TABLE_SIZE);
         return table[hash];
       }
 
       void put(int key, Element* elem)
       {
-            int hash = (key % TABLE_SIZE);
+            int hash = (key % M % TABLE_SIZE);
             if (table[hash] == NULL) table[hash] = new HashEntry(key, elem);
             else
             {

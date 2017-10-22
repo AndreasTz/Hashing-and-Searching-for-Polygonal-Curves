@@ -181,11 +181,12 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details){
+void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
   //printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
   vector<double> initialCurveNoDublicatesVec;
-  removeDuplicates(&initialCurveNoDublicatesVec,curvePoints, dimension, noofPointsInCurve );
+  removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, noofPointsInCurve);
+  v->push_back(initialCurveNoDublicatesVec);
 
   int delta =  4*(int)dimension*R; //*min(curve_i)
 
@@ -249,20 +250,21 @@ void operation(double dimension, int R, double ** curvePoints , int noofPointsIn
       //  cout << "BUCK:: " << endl;
       //  HashArray[l]->printBucket(l);
 
+
       free(newCurvePoints);
       free(displacedGrid);
     }
     cout << " K grid Curves are" << endl;
     printVector( &all_K_gridCurvesVecNoDublicates);
 
-    Element * hashElement = new Element(5, 5, &all_K_gridCurvesVecNoDublicates);
+    Element* hashElement = new Element(5, 5, &all_K_gridCurvesVecNoDublicates);
   //  hashElement -> gridCurve = *all_K_gridCurvesVecNoDublicates;
     HashArray[l]->put(l, hashElement); // eisagwgi se hash table*/
   }
   free(Grid);
 }
 
-void addtoR(vector<int>* v, int d)
+/*void addtoR(vector<int>* v, int d)
 {
   while (d)
   {
@@ -274,4 +276,4 @@ void addtoR(vector<int>* v, int d)
 void deleteR(vector<int>* v)
 {
   v->clear();
-}
+}*/
