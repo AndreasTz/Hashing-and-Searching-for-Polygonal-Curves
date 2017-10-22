@@ -92,7 +92,7 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
 			}
     }
 
-    operation(dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
+    operation(info -> curve_id, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
 
     nextLineOfFile;
 		getline(myfile, nextLineOfFile);
