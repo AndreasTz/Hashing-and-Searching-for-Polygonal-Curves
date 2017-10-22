@@ -92,7 +92,8 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
 			}
     }
 
-    operation(info -> curve_id, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
+	int curveid = atoi(info -> curve_id.c_str());
+    operation(curveid, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
 
     nextLineOfFile;
 		getline(myfile, nextLineOfFile);
