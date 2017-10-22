@@ -19,9 +19,9 @@
 #define minus_Hash "-hash"
 
  double R;
- int dimension;
+ double dimension;
 
-#define delta 4*dimension*R
+//#define delta 4*dimension*R
 
 using namespace std;
 
