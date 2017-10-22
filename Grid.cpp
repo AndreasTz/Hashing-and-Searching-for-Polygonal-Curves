@@ -211,7 +211,7 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
+void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
   //printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
   vector<double> initialCurveNoDublicatesVec;
@@ -287,8 +287,8 @@ void operation(double dimension, int R, double ** curvePoints , int noofPointsIn
     cout << " K grid Curves are" << endl;
     printVector(&all_K_gridCurvesVecNoDublicates);
 
-    int id = 0;
-    Element* hashElement = new Element(id, &all_K_gridCurvesVecNoDublicates);
+    //int id = 0;
+    Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
     int hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
     HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
   }
