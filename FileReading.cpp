@@ -65,7 +65,7 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
 
 	}
 
-//	vector<string> curveIDVec;
+	vector<int> curveNoOfPointsVec;
 
   string nextLineOfFile ;
   getline(myfile, nextLineOfFile);
@@ -74,11 +74,12 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
 	while(!myfile.eof() && nextLineOfFile.compare("\n")){
 
     info -> curve_id = strtok ( const_cast<char*> (nextLineOfFile.c_str()),"\t, ");
-///		curveIDVec.push_back(info -> curve_id);
+		
 
     string noofPointsInCurveStr =  strtok( NULL , "\t, ");
     info -> noofPointsInCurve = atoi(noofPointsInCurveStr.c_str());
-
+	curveNoOfPointsVec.push_back(info -> noofPointsInCurve);
+		
     string pointStr;
 
     for(int i = 0; i < info -> noofPointsInCurve ; i++){
@@ -96,7 +97,7 @@ void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetail
     operation(curveid, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
 
     nextLineOfFile;
-		getline(myfile, nextLineOfFile);
+	getline(myfile, nextLineOfFile);
 
 	}
 }
