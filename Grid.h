@@ -19,7 +19,7 @@ void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printabl
 
 void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int noofPointsInCurve);
 
-void operation(double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
+void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
 
 void printVector(vector<double>* t);
 
