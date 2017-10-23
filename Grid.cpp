@@ -130,9 +130,9 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
     }
       flag = 0;
   }
-cout << "RM DUP: noofPointsInCurve: " << noofPointsInCurve << endl;
-cout << "RM DUP: dimension: " << dimension << endl;
-cout << "RM DUP: count: " << count << endl;
+//cout << "RM DUP: noofPointsInCurve: " << noofPointsInCurve << endl;
+//cout << "RM DUP: dimension: " << dimension << endl;
+//cout << "RM DUP: count: " << count << endl;
 
 
   for(int i = 0 ; i < noofPointsInCurve -count;i++){
@@ -199,8 +199,10 @@ Synartisi i opoia vazei ola ta simeia mias grid curve se ena pio geniko vector p
 */
 void concatAnotherGridCurve(vector<double> *singleVecNoDublicates, vector<double> * all_K_gridCurvesVecNoDublicates){
   double elem;
-  for(int i = 0 ; i < singleVecNoDublicates->size() + 3; i++){
-    cout << "Mphka!" << endl;
+
+  int sizeOfVec = singleVecNoDublicates->size();
+
+  for(int i = 0 ; i < sizeOfVec; i++){
     elem = singleVecNoDublicates->back();
     singleVecNoDublicates->pop_back();
     all_K_gridCurvesVecNoDublicates -> push_back(elem);
@@ -223,8 +225,9 @@ void operation(int curve_id, double dimension, int R, double ** curvePoints , in
   vector<double> initialCurveNoDublicatesVec;
   removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, noofPointsInCurve);
   v->push_back(initialCurveNoDublicatesVec);
-	    cout << " InitiAl curve with no dubl" << endl;
-    printVector(&initialCurveNoDublicatesVec);
+	cout << " InitiAl curve with no dubl" << endl;
+  printVector(&initialCurveNoDublicatesVec);
+
   int delta =  4*(int)dimension*R; //*min(curve_i)
 
   double ** Grid = new double* [(int)dimension];
@@ -237,7 +240,8 @@ void operation(int curve_id, double dimension, int R, double ** curvePoints , in
       Grid[i][j] = i * delta;
     }
   }
-printGrid("Grid", dimension, dimension, Grid);
+  printGrid("Grid", dimension, dimension, Grid);
+
   vector<double> displacedFactor;
   vector<double> singleVecNoDublicates;
   vector<double> all_K_gridCurvesVecNoDublicates;
