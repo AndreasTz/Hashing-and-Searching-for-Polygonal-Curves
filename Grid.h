@@ -5,10 +5,6 @@
 #include "HelpClasses.h"
 #include <vector>
 
-int CompareVectors(vector<double>* v1, vector<double>* v2);
-
-int CompareHashElementVectors(Element* ele1, Element* ele2);
-
 void addtoR(vector<int>* v, int d);
 
 void deleteR(vector<int>* v);
@@ -23,7 +19,7 @@ void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printabl
 
 void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int noofPointsInCurve);
 
-void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
+void operation(string typeOfHashFunc, int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
 
 void printVector(vector<double>* t);
 

@@ -10,24 +10,6 @@ using namespace std;
 
 vector<int> rVector;
 
-//INPUT 2 vector<double>
-//OUTPUT: 1 if they are equal, 0 otherwise!
-
-int CompareVectors(vector<double>* v1, vector<double>* v2)
-{
-  if (v1->size() != v2->size()) return 0;
-  for (int i; i<v1->size(); i++)
-  {
-    if (v1[0][i] != v2[0][i]) return 0;
-  }
-  return 1;
-}
-
-int CompareHashElementVectors(Element* ele1, Element* ele2)
-{
-  return CompareVectors(ele1->gridCurve, ele2->gridCurve);
-}
-
 void addtoR(vector<int>* v, int d)
 {
   while (d)
@@ -237,7 +219,7 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
+void operation(string typeOfHashFunc, int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
   printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
   vector<double> initialCurveNoDublicatesVec;
@@ -301,12 +283,12 @@ void operation(int curve_id, double dimension, int R, double ** curvePoints , in
 
       singleVecNoDublicates.clear();
       removeDuplicates(&singleVecNoDublicates, newCurvePoints, dimension, noofPointsInCurve);
-      cout << " SINGLE before concat" <<endl;
-      printVector(&singleVecNoDublicates);
-      cout << " SINGLE after concat" <<endl;
+      //cout << " SINGLE before concat" <<endl;
+      //printVector(&singleVecNoDublicates);
+      //cout << " SINGLE after concat" <<endl;
       concatAnotherGridCurve(&singleVecNoDublicates, &all_K_gridCurvesVecNoDublicates);
-      printVector(&singleVecNoDublicates);
-      printGrid("New Curve Grid without Dublicates", noofPointsInCurve, dimension, newCurvePoints);
+      //printVector(&singleVecNoDublicates);
+      //printGrid("New Curve Grid without Dublicates", noofPointsInCurve, dimension, newCurvePoints);
 
       //  cout << "BUCK:: " << endl;
       //  HashArray[l]->printBucket(l);
@@ -315,19 +297,31 @@ void operation(int curve_id, double dimension, int R, double ** curvePoints , in
       free(newCurvePoints);
       free(displacedGrid);
     }
-    cout << " K grid Curves are" << endl;
-    printVector(&all_K_gridCurvesVecNoDublicates);
+    //cout << " K grid Curves are" << endl;
+    //printVector(&all_K_gridCurvesVecNoDublicates);
 
     //int id = 0;
+    int hashKey;
     Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
-    int hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
-    cout << "Xasarw me kleidi: " << hashKey << endl;
+
+    if(!typeOfHashFunc.compare("probabilistic")){
+      const int k_vec = 3;
+      for(int i = 0 ; i < k_vec ; i++){
+        createVecFunc(&all_K_gridCurvesVecNoDublicates, ); //all_K_gridCurvesVecNoDublicates[i]=p / xreiazetai ena v(den kserw poio einai) ena t kai ena w
+          //concat ta  k_vec hashfunc 1. allazw onoma concatAnotherGridCurve 2. ftiaxnw concatKVecHashFunc 3.createVecFunc()
+      }
+      hashKey = FindHashValue(&concatKVecHashFunc);
+    }
+    else{
+      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates); // NA ALLAKSEI
+    }
+    /*cout << "Xasarw me kleidi: " << hashKey << endl;
     cout << "Eftiaksa R: ";
     for (int i = 0; i < rVector.size(); i++)
     {
       cout << rVector[i] << " ";
     }
-    cout << endl;
+    cout << endl;*/
     HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
   }
   free(Grid);
