@@ -5,30 +5,39 @@
 #include "HelpClasses.h"
 #include <vector>
 
+int CompareVectors(vector<double>* v1, vector<double>* v2);
+
+int CompareHashElementVectors(Element* ele1, Element* ele2);
+
 void addtoR(vector<int>* v, int d);
 
 void deleteR(vector<int>* v);
 
 int FindHashValue(vector<double>* concVector);
 
-int selectUniformlyRandomT(int dimension);
+double selectFromNormalDistr();
+
+double selectUniformlyRandomT(int maxValue);
 
 double findMinPointInAnyAxis(int dimension, int axis, double curvePoint, double ** displacedGrid);
 
 void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid);
 
-void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int noofPointsInCurve);
+void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int *noofPointsInCurve);
 
-void operation(string typeOfHashFunc, int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
+void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
 
 void printVector(vector<double>* t);
 
-void concatAnotherGridCurve(vector<double> *singleVecNoDublicates, vector<double> * all_K_gridCurvesVecNoDublicates);
+void Concatenation(vector<double> *singleVec, vector<double> * resultVec);
 
-void selectT_Vector(vector<double>* t, int dimension);
+void selectT_Vector(vector<double>* t, double lenOfVec);
 
-//void addtoR(vector<int>* v, int d);
+void createVecFunc(double dimension,vector<double>* all_K_gridCurvesVecNoDublicates, vector<double>* singleHashFuncVec);
 
-//void deleteR(vector<int>* v);
+void findPoint(double dimension, vector<double> *resultVec, vector<double>* all_K_gridCurvesVecNoDublicatesCP);
+
+double findMinA(int dimension, vector<double>* displacedFactor, vector<double>* initialCurveNoDublicatesVec);
+
 
 #endif

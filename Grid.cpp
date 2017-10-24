@@ -1,14 +1,40 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 #include "Hashing.h"
 #include "HelpClasses.h"
 #include "Grid.h"
 
+
+#define delta 0.1
+#define K_VEC 3
+
 using namespace std;
 
 vector<int> rVector;
+
+//INPUT 2 vector<double>
+//OUTPUT: 1 if they are equal, 0 otherwise!
+
+
+int CompareVectors(vector<double>* v1, vector<double>* v2)
+{
+  if (v1->size() != v2->size()) return 0;
+  for (int i; i<v1->size(); i++)
+  {
+    if (v1[0][i] != v2[0][i]) return 0;
+  }
+  return 1;
+}
+
+
+int CompareHashElementVectors(Element* ele1, Element* ele2)
+{
+  return CompareVectors(ele1->gridCurve, ele2->gridCurve);
+}
+
 
 void addtoR(vector<int>* v, int d)
 {
@@ -46,10 +72,10 @@ Sunartisi i opoia upologizei kai epistrefei enan tyxaio arithmo (me vasi tin omo
   input : dimension (diastasi tis kampilis)
   output : tyxaios arithmos apo tin omoiomorfi katanomi
 */
-int selectUniformlyRandomT(double dimension){
+double selectUniformlyRandomT(double maxValue){
 
-  double max = 0.0;
-  double min = pow((double)dimension *1.0 , (double)dimension *1.0);
+  double min = 0.0;
+  double max = maxValue ;
   double j = min + (double) ((max-min+1.0) * (rand() / (RAND_MAX + 1.0)));
 
   return j;
@@ -91,13 +117,13 @@ Sunartisi i opoia apallasei apo diplotypes emfaniseis idiwn simeiwn
         noofPointsInCurve (plithos simeiwn tis kampilis)
   output: -
 */
-void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int noofPointsInCurve){
+void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int* noofPointsInCurve){
 
   int flag = 0 ;
   int k =0;
   int count =0; //poses fores vrika dublicate
 
-  for(int i = 1 ; i < noofPointsInCurve; i++ ){
+  for(int i = 1 ; i < *noofPointsInCurve; i++ ){
 
     int thesi = i - count;
 
@@ -116,7 +142,7 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
       if(flag == ((int) dimension) -1){
 
         cout << " We have a dublicate!  " << endl;
-        for(int k = i-count; k < noofPointsInCurve-1; k++) {
+        for(int k = i-count; k < *noofPointsInCurve-1; k++) {
           for(int j = 0; j < dimension; j++) {
 
              newCurvePoints[k][j] = newCurvePoints[k+1][j];
@@ -125,7 +151,7 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
         }
 
         count++;
-
+        *noofPointsInCurve--;
       }
     }
       flag = 0;
@@ -134,15 +160,14 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
 //cout << "RM DUP: dimension: " << dimension << endl;
 //cout << "RM DUP: count: " << count << endl;
 
-
-  for(int i = 0 ; i < noofPointsInCurve -count;i++){
+  for(int i = 0 ; i < *noofPointsInCurve -count;i++){
     for(int j = 0 ; j < (int)dimension ; j++){
       vecWithoutDublicates->push_back(newCurvePoints[i][j]);
       cout << newCurvePoints[i][j] << " ";
       }
     }
-   printVector(vecWithoutDublicates);
-  }
+   // printVector(vecWithoutDublicates);
+}
 
 
 /*
@@ -150,10 +175,10 @@ Sunartisi i opoia ektypwnei ta simeia tou ekastwte grid
   input : typeOfGrid (Xrisimopoieitai kyriws gia tin ektypwsi tou eidous tou grid pou epilegoume na ektypwthei)
           noofRows (To plithos twn grammwn tou epilegomenoy pinaka)
           noofCols (To plithos twn stilwn tou epilegomenoy pinaka)
-          printableGrid (O pinakas pou theloume na ektypwthei)
+           printableGrid (O pinakas pou theloume na ektypwthei)
   output : -
 */
-void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid){
+void  printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid){
 
     cout <<  typeOfGrid  << endl;
     for(int i=0 ; i < noofRows ;i++){
@@ -174,39 +199,144 @@ void printVector(vector<double>* t){
   cout << " ***" << endl;
 }
 
+
 /*
 Synartisi epilogis tyxaiou vector pros metatopisi
 */
-void selectT_Vector(vector<double>* t, double dimension){
-  t->push_back(selectUniformlyRandomT(dimension));
+void selectT_Vector(vector<double>* t, double lenOfVec){
+  t->push_back(selectUniformlyRandomT(lenOfVec));
 
   int newt;
-  for(int i = 1; i < (int)dimension; i++){ //gia kathe diastasi
+  for(int i = 1; i < (int)lenOfVec; i++){ //gia kathe diastasi
 
-    newt = selectUniformlyRandomT(dimension);
+    newt = selectUniformlyRandomT(lenOfVec);
     t->push_back(newt);
 
   }
-  printVector(t);
+   //printVector(t);
 }
 
 
 /*
 Synartisi i opoia vazei ola ta simeia mias grid curve se ena pio geniko vector pou periexei ta simeia kai twn K grid curve pou apaitountai
-  input : singleVecNoDublicates (vector me ta simeia tis MIAS grid-curve)
-          all_K_gridCurvesVecNoDublicates (vector me ta simeia twn K grid curves)
+  input : singleVec (vector me ta simeia tis MIAS grid-curve)
+          resultVec (vector pou ginetai concat)
   output : -
 */
-void concatAnotherGridCurve(vector<double> *singleVecNoDublicates, vector<double> * all_K_gridCurvesVecNoDublicates){
+void Concatenation(vector<double> *singleVec, vector<double> * resultVec){
   double elem;
 
-  int sizeOfVec = singleVecNoDublicates->size();
+  int sizeOfVec = singleVec->size();
 
   for(int i = 0 ; i < sizeOfVec; i++){
-    elem = singleVecNoDublicates->back();
-    singleVecNoDublicates->pop_back();
-    all_K_gridCurvesVecNoDublicates -> push_back(elem);
+    elem = singleVec->back();
+    singleVec->pop_back();
+    resultVec -> push_back(elem);
   }
+}
+
+
+/*
+Sunartisi i opoia epistrefei enan arithmo apo kanoniki katanomi*/
+double selectFromNormalDistr() {
+    double u = ((double) rand() / (RAND_MAX)) * 2 - 1;
+    double v = ((double) rand() / (RAND_MAX)) * 2 - 1;
+    double r = u * u + v * v;
+    if (r == 0 || r > 1) return selectFromNormalDistr();
+    double c = sqrt(-2 * log(r) / r);
+    return abs(u * c);
+}
+
+
+/*
+Sunartisi i opoia apo ena vector briskei ena simeio
+input : dimension(diastasi simeiou)
+        resultVec (vector apothikeysis apotelesmatos)
+        all_K_gridCurvesVecNoDublicatesCP (vector pou periexei kai tis k kampiles plegmatos )
+output: -
+*/
+void findPoint(double dimension, vector<double> *resultVec, vector<double> *all_K_gridCurvesVecNoDublicatesCP){
+  double Elem;
+  resultVec->clear();
+  for(int i = 0; i < dimension ; i++){
+
+    Elem = all_K_gridCurvesVecNoDublicatesCP->back();
+    all_K_gridCurvesVecNoDublicatesCP->pop_back();
+    resultVec->push_back(Elem);
+  }
+}
+
+
+/*
+Synartisi i opoia ypologizei to euklideio has
+me basi twn tipo h= floor((point * v + t) /w)
+  input : dimension(diastasi twn simeiwn)
+          all_K_gridCurvesVecNoDublicates (to concat twn k grid-curve)
+          singleHashFuncVec (to apotelesma)
+  output : -
+*/
+void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublicates, vector<double>* singleHashFuncVec){
+  vector<double> v;
+  vector<double> tempResultVec;
+
+  const int w = 4;
+  double swiftFactor;
+  double multRes;
+  double sum;
+  double divRes;
+  int total;
+
+  for(int i = 0 ; i < all_K_gridCurvesVecNoDublicates->size(); i++){
+
+    v.clear();
+
+    swiftFactor = selectUniformlyRandomT((double)w);
+
+    for(int i =0; i < dimension ; i++)
+      v.push_back(selectFromNormalDistr());
+
+    tempResultVec.clear();
+    findPoint(dimension,&tempResultVec, all_K_gridCurvesVecNoDublicates);
+
+    for(int i = 0 ; i < tempResultVec.size(); i++){
+      multRes = tempResultVec[i] * v[i];
+    }
+
+    sum = multRes + swiftFactor;
+    divRes = sum / w;
+    total =   floor(divRes);
+    singleHashFuncVec->push_back(total);
+
+  }
+
+}
+
+
+/*
+Synartisi i opoia upologizei to mikrotero a_i gia tin dimiourgia tou arxikou Grid
+  input : dimension (diastasi simeiwn kampilis)
+          displacedFactor (paragontas metatopisis)
+          initialCurveNoDublicatesVec (arxiki kampili xwris diplotipa)
+  output: minA(to mikrotero a_i)
+*/
+double findMinA(int dimension, vector<double>* displacedFactor, vector<double>* initialCurveNoDublicatesVec){
+  int count = 0 ;
+  double *a = new double [initialCurveNoDublicatesVec->size()];
+  double minA = a[0];
+  for(int i = 0 ; i < initialCurveNoDublicatesVec->size(); i++){
+    a[i] = abs(initialCurveNoDublicatesVec[0][i] - displacedFactor[0][count]) /delta;
+    if(count < dimension){
+      count++;
+    }
+    else{
+      count = 0;
+    }
+    if(minA < a[i]){
+      minA =  a[i];
+    }
+  }
+  cout << "minA" << minA << endl;
+  return minA;
 }
 
 
@@ -219,29 +349,25 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void operation(string typeOfHashFunc, int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
+void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
-  printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
+  // printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
   vector<double> initialCurveNoDublicatesVec;
-  removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, noofPointsInCurve);
+  removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
+  cout << "noofPointsInCurve: " << noofPointsInCurve <<endl;
   v->push_back(initialCurveNoDublicatesVec);
-	cout << " InitiAl curve with no dubl" << endl;
-  printVector(&initialCurveNoDublicatesVec);
-
-  int delta =  4*(int)dimension*R; //*min(curve_i)
 
   double ** Grid = new double* [(int)dimension];
   for(int i = 0; i < (int)dimension; i++){
       Grid[i] = new double[(int)dimension];
   }
-
+  ///THA ALLAKSEI!!!!!!!
   for(int i=0 ; i < (int)dimension; i++){
-    for(int j = 0  ; j < (int)dimension; j++ ){
-      Grid[i][j] = i * delta;
-    }
-  }
+     for(int j = 0  ; j < (int)dimension; j++ ){
+       Grid[i][j] = i * delta;
+     }
+   }
   printGrid("Grid", dimension, dimension, Grid);
-
   vector<double> displacedFactor;
   vector<double> singleVecNoDublicates;
   vector<double> all_K_gridCurvesVecNoDublicates;
@@ -251,6 +377,7 @@ void operation(string typeOfHashFunc, int curve_id, double dimension, int R, dou
 
       displacedFactor.clear();
       selectT_Vector(&displacedFactor, dimension);
+      printVector(&displacedFactor);
 
       double ** displacedGrid = new double* [(int)dimension];
 
@@ -263,7 +390,7 @@ void operation(string typeOfHashFunc, int curve_id, double dimension, int R, dou
           displacedGrid[i][j] = Grid[i][j] + displacedFactor[j];
         }
       }
-      printGrid("Displaced Grid", dimension, dimension, displacedGrid);
+      // printGrid("Displaced Grid", dimension, dimension, displacedGrid);
 
       //Sygkrisi me stoixeia tis kampulis
       double ** newCurvePoints =  new double*[noofPointsInCurve];
@@ -279,49 +406,56 @@ void operation(string typeOfHashFunc, int curve_id, double dimension, int R, dou
 
         }
       }
-      printGrid("New Curve Grid", noofPointsInCurve, dimension, newCurvePoints);
+      // printGrid("New Curve Grid", noofPointsInCurve, dimension, newCurvePoints);
 
       singleVecNoDublicates.clear();
-      removeDuplicates(&singleVecNoDublicates, newCurvePoints, dimension, noofPointsInCurve);
+      removeDuplicates(&singleVecNoDublicates, newCurvePoints, dimension, &noofPointsInCurve);
       //cout << " SINGLE before concat" <<endl;
-      //printVector(&singleVecNoDublicates);
+      // printVector(&singleVecNoDublicates);
       //cout << " SINGLE after concat" <<endl;
-      concatAnotherGridCurve(&singleVecNoDublicates, &all_K_gridCurvesVecNoDublicates);
-      //printVector(&singleVecNoDublicates);
-      //printGrid("New Curve Grid without Dublicates", noofPointsInCurve, dimension, newCurvePoints);
+      Concatenation(&singleVecNoDublicates, &all_K_gridCurvesVecNoDublicates);
+      // printVector(&singleVecNoDublicates);
+      // printGrid("New Curve Grid without Dublicates", noofPointsInCurve, dimension, newCurvePoints);
 
       //  cout << "BUCK:: " << endl;
-      //  HashArray[l]->printBucket(l);
+      //  HashArray[l]-> printBucket(l);
 
 
       free(newCurvePoints);
       free(displacedGrid);
     }
-    //cout << " K grid Curves are" << endl;
-    //printVector(&all_K_gridCurvesVecNoDublicates);
+    cout << " K grid Curves are" << endl;
+    // printVector(&all_K_gridCurvesVecNoDublicates);
 
-    //int id = 0;
-    int hashKey;
     Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
 
-    if(!typeOfHashFunc.compare("probabilistic")){
-      const int k_vec = 3;
-      for(int i = 0 ; i < k_vec ; i++){
-        createVecFunc(&all_K_gridCurvesVecNoDublicates, ); //all_K_gridCurvesVecNoDublicates[i]=p / xreiazetai ena v(den kserw poio einai) ena t kai ena w
-          //concat ta  k_vec hashfunc 1. allazw onoma concatAnotherGridCurve 2. ftiaxnw concatKVecHashFunc 3.createVecFunc()
-      }
-      hashKey = FindHashValue(&concatKVecHashFunc);
+    int hashKey;
+    if(!details -> typeOfHashChoice.compare("classic")){
+
+      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
+
     }
     else{
-      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates); // NA ALLAKSEI
+      vector<double> concatKVecHashFunc;
+      vector<double> singleHashFuncVec;
+
+      for(int i = 0 ; i < K_VEC ; i++){
+          singleHashFuncVec.clear();
+          createVecFunc(dimension, &all_K_gridCurvesVecNoDublicates, &singleHashFuncVec);
+          Concatenation(&singleHashFuncVec, &concatKVecHashFunc);
+      }
+
+      hashKey = FindHashValue(&concatKVecHashFunc);
+
     }
-    /*cout << "Xasarw me kleidi: " << hashKey << endl;
+  /*  cout << "Xasarw me kleidi: " << hashKey << endl;
     cout << "Eftiaksa R: ";
     for (int i = 0; i < rVector.size(); i++)
     {
       cout << rVector[i] << " ";
     }
-    cout << endl;*/
+    cout << endl;
+    */
     HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
   }
   free(Grid);
