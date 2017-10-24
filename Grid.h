@@ -5,6 +5,10 @@
 #include "HelpClasses.h"
 #include <vector>
 
+int CompareVectors(vector<double>* v1, vector<double>* v2);
+
+int CompareHashElementVectors(Element* ele1, Element* ele2);
+
 void addtoR(vector<int>* v, int d);
 
 void deleteR(vector<int>* v);

@@ -10,6 +10,24 @@ using namespace std;
 
 vector<int> rVector;
 
+//INPUT 2 vector<double>
+//OUTPUT: 1 if they are equal, 0 otherwise!
+
+int CompareVectors(vector<double>* v1, vector<double>* v2)
+{
+  if (v1->size() != v2->size()) return 0;
+  for (int i; i<v1->size(); i++)
+  {
+    if (v1[0][i] != v2[0][i]) return 0;
+  }
+  return 1;
+}
+
+int CompareHashElementVectors(Element* ele1, Element* ele2)
+{
+  return CompareVectors(ele1->gridCurve, ele2->gridCurve);
+}
+
 void addtoR(vector<int>* v, int d)
 {
   while (d)

@@ -152,6 +152,17 @@ public:
             }
       }
 
+      int FindBucket(int key)
+      {
+        int index = (key % M % TABLE_SIZE);
+        return index;
+      }
+
+      HashEntry* FirstElementOfBucket(int index)
+      {
+        return table[index];
+      }
+
       ~HashMap()
       {
             for (int i = 0; i < TABLE_SIZE; i++)
