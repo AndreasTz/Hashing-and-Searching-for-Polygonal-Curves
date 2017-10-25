@@ -448,11 +448,11 @@ free(Grid);
 
 
 HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
-  vector<double> initialCurveNoDublicatesVec;
-  removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
+  //vector<double> initialCurveNoDublicatesVec;
+  //removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
 
-  v->push_back(initialCurveNoDublicatesVec);
-
+  ///v->push_back(initialCurveNoDublicatesVec);
+  //H initialCurve ginetai sto prepareForLSH s auti tin ekdosi
   for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
     PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, details, v, curvePoints , noofPointsInCurve);
     //HASHING
