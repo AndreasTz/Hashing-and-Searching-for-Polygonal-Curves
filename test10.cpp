@@ -18,20 +18,13 @@
 #define minus_Function "-function"
 #define minus_Hash "-hash"
 
- double R;
- double dimension;
-
-//#define delta 4*dimension*R
-
 using namespace std;
-
 
 
 /*
 	CMD::::!!!!!!!!!!!!!!! Yparxei dinatotita na dineis -stats <otidipote> kai apla -stats <keno>
 	Menu:::: !!!!!!!!!!!!!! yparxei sinthiki elegxou gia na dinetai yes/no
 */
-
 void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails * details) {
 
 	string arg;
@@ -180,10 +173,39 @@ void menu(PreferedDetails *details){
 
 	cout << " Please enter the path of QUERY FILE " << endl;
 	getline(cin, details->queryFile);
+}
+
+
+void showPreferences(PreferedDetails *details){
+
+	cout << "Your prefereces are: " << endl;
+	cout << "Input File: " << details->inputFile << endl;
+	cout << "Output File: " << details->outputFile << endl;
+	cout << "Query File: " << details->queryFile << endl;
+	cout << "number of Locality Sensitive Functions: " << details->numberOfLocalitySensitiveFunctions << endl;
+	cout << "numberOfHashingArrays: " << details->numberOfHashingArrays << endl;
+	cout << "optional Stats Is Here: " << details->optionalStatsIsHere << endl;
+	cout << "type of Function Choice: " << details->typeOfFunctionChoice << endl;
+	cout << "type of Hash Choice: " << details->typeOfHashChoice << endl;
 
 }
 
 
+string checkForContinue(){
+	string answer;
+	while(1){
+			cout << "Do you want to continue for a different input? (yes / no)" << endl;
+			cin >> answer;
+
+			if(answer.compare("yes") && answer.compare("no")){
+				cout << "Please enter yes or no" << endl;
+			}
+			else{
+				return(answer);
+				//break;
+			}
+	}
+}
 
 int main(int argc , char const *argv[]){
 
@@ -205,19 +227,9 @@ int main(int argc , char const *argv[]){
 
 		}
 
-			cout << "Your prefereces are: " << endl;
-			cout << "Input File: " << details->inputFile << endl;
-			cout << "Output File: " << details->outputFile << endl;
-			cout << "Query File: " << details->queryFile << endl;
-			cout << "number of Locality Sensitive Functions: " << details->numberOfLocalitySensitiveFunctions << endl;
-			cout << "numberOfHashingArrays: " << details->numberOfHashingArrays << endl;
-			cout << "optional Stats Is Here: " << details->optionalStatsIsHere << endl;
-			cout << "type of Function Choice: " << details->typeOfFunctionChoice << endl;
-			cout << "type of Hash Choice: " << details->typeOfHashChoice << endl;
+		showPreferences(details);
 
-			//MAIN JOB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //vector<double**> gridVector;
-      vector<vector<double>> gridVector;
+    vector<vector<double>> gridVector;
 
       /*********************************************************
       //for each curve we do
@@ -226,32 +238,19 @@ int main(int argc , char const *argv[]){
       gridVector[i][n][m] //i = curveID - 1, n/m = diastaseis
       *********************************************************/
 
-			HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
+		HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
 
-		  for(int i = 0; i < details->numberOfHashingArrays ; i++){
-		      HashArray[i] = new HashMap();
-		  }
-
-			cout << "Molis dimiourgithikan L Hash Arrays <3 " << endl;
-
-      HashEntry* bucket;
-			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector);
-
-
-
-	//		cout << "delta::" << delta << endl;
-			while(1){
-				cout << "Do you want to continue for a different input? (yes / no)" << endl;
-				cin >> answer;
-
-				if(answer.compare("yes") && answer.compare("no")){
-					cout << "Please enter yes or no" << endl;
-				}
-				else{
-					break;
-				}
-			}
+		for(int i = 0; i < details->numberOfHashingArrays ; i++){
+			HashArray[i] = new HashMap();
 		}
 
+		cout << "Molis dimiourgithikan L Hash Arrays :) " << endl;
+
+    HashEntry* bucket;
+		bucket = readingFromFile(details->queryFile , HashArray, details, &gridVector);
+
+		answer = checkForContinue();
+
+	}
 		return 0;
 }
