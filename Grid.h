@@ -37,7 +37,9 @@ void createVecFunc(double dimension,vector<double>* all_K_gridCurvesVecNoDublica
 
 void findPoint(double dimension, vector<double> *resultVec, vector<double>* all_K_gridCurvesVecNoDublicatesCP);
 
-double findMinA(int dimension, vector<double>* displacedFactor, vector<double>* initialCurveNoDublicatesVec);
+double findMinA(int dimension, int row ,int col, vector<vector <double> >* displacedFactor, vector<double>* initialCurveNoDublicatesVec);
+
+void fillGrid(int dimension, int numberOfLocalitySensitiveFunctions, vector< vector<double> >* vectorOfVectors ,vector<double>* initialCurveNoDublicatesVec, double** Grid);
 
 
 #endif
