@@ -383,6 +383,20 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
+
+/*
+HashEntry* QueryOperation()
+{
+  /*
+  POPI THINGS <3
+  */
+
+  /*
+  ESTW output concVector
+}
+
+*/
+
 void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
   // printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);

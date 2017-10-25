@@ -24,7 +24,7 @@ class InitialCurve{
 };
 
 
-void readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v);
+HashEntry* readingFromFile(string Filename , HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v);
 
 
 

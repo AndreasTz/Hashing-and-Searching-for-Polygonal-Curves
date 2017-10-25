@@ -234,8 +234,8 @@ int main(int argc , char const *argv[]){
 
 			cout << "Molis dimiourgithikan L Hash Arrays <3 " << endl;
 
-
-			readingFromFile(details->inputFile , HashArray, details, &gridVector);
+      HashEntry* bucket;
+			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector);
 
 
 
