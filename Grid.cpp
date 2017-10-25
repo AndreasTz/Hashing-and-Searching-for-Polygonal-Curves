@@ -29,13 +29,13 @@ int CompareVectors(vector<double>* v1, vector<double>* v2)
   return 1;
 }
 
-
+//pretified for element data struct
 int CompareHashElementVectors(Element* ele1, Element* ele2)
 {
   return CompareVectors(ele1->gridCurve, ele2->gridCurve);
 }
 
-
+//adding size to Rvector when needed
 void addtoR(vector<int>* v, int d)
 {
   while (d)
@@ -46,11 +46,14 @@ void addtoR(vector<int>* v, int d)
   }
 }
 
+//idk
 void deleteR(vector<int>* v)
 {
   v->clear();
 }
 
+//INPUT v<d>*
+//OUTPUT int type hashValue (which will be changed to index in Hashing.cpp functions)
 int FindHashValue(vector<double>* concVector)
 {
   if (rVector.size() < concVector->size())
