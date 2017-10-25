@@ -448,9 +448,11 @@ free(Grid);
 
 
 HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
-
-  PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, details, v, curvePoints , noofPointsInCurve);
-  //HASHING
+  
+  for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
+    PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, details, v, curvePoints , noofPointsInCurve);
+    //HASHING
+  }
 }
 
 
