@@ -295,7 +295,7 @@ void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublic
 
   for(int i = 0 ; i < all_K_gridCurvesVecNoDublicates->size(); i++){
 
-    v.clear();
+//    v.clear();
 
     swiftFactor = selectUniformlyRandomT((double)w);
 
@@ -369,10 +369,11 @@ void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiv
     selectT_Vector(&rowVec,dimension);
     vectorOfVectors->push_back(rowVec);
   }
-
+  double value;
   for(int i=0 ; i < (int)dimension; i++){
     for(int j = 0  ; j < (int)dimension; j++ ){
-      Grid[i][j] = (j+1)* findMinA(dimension, i, j, vectorOfVectors , initialCurveNoDublicatesVec );
+       value = (j+1)* findMinA(dimension, i, j, vectorOfVectors , initialCurveNoDublicatesVec );
+       Grid[i][j] = floor(value);
     }
   }
 }
