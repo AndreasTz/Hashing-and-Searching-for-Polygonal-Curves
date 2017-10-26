@@ -48,8 +48,12 @@ int main(int argc , char const *argv[]){
 		}
 
 		showPreferences(details);
-
-    vector<vector<double>> gridVector;
+		int count = 200;
+		if(details->optionalStatsIsHere){
+			count = 0 ;
+		}
+		do{
+    	vector<vector<double>> gridVector;
 
       /*********************************************************
       //for each curve we do
@@ -58,19 +62,22 @@ int main(int argc , char const *argv[]){
       gridVector[i][n][m] //i = curveID - 1, n/m = diastaseis
       *********************************************************/
 
-		HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
+			HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
 
-		for(int i = 0; i < details->numberOfHashingArrays ; i++){
-			HashArray[i] = new HashMap();
-		}
+			for(int i = 0; i < details->numberOfHashingArrays ; i++){
+				HashArray[i] = new HashMap();
+			}
 
-		cout << "Molis dimiourgithikan L Hash Arrays :) " << endl;
+			cout << "Molis dimiourgithikan L Hash Arrays :) " << endl;
 
-    HashEntry* bucket;
-		bucket = readingFromFile(details->queryFile , HashArray, details, &gridVector);
+    	HashEntry* bucket;
+			bucket = readingFromFile(details->queryFile , HashArray, details, &gridVector);
+			count++;
 
+			//Free HashMap
+			//Metrisi xronou gia query
+		}while(count < 100);
 		answer = checkForContinue();
-
 	}
 		return 0;
 }

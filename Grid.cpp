@@ -91,9 +91,7 @@ O upologismos ginetai simeio simeio gia kathe aksona ksexorista.
   input : dimension (H diastasi tis kampilis)
           curvePoint (Simeio se aksona)
           displacedGrid
-
   output : minElem (To kontinotero simeio tou grid)
-
 */
 double findMinPointInAnyAxis(double dimension, int axis, double curvePoint, double ** displacedGrid){
 
@@ -240,14 +238,29 @@ void Concatenation(vector<double> *singleVec, vector<double> * resultVec){
 
 
 /*
-Sunartisi i opoia epistrefei enan arithmo apo kanoniki katanomi*/
+Sunartisi i opoia epistrefei enan arithmo apo kanoniki katanomi me vasi tin methodo Marsaglia twn diafaneiwn
+*/
 double selectFromNormalDistr() {
-    double u = ((double) rand() / (RAND_MAX)) * 2 - 1;
-    double v = ((double) rand() / (RAND_MAX)) * 2 - 1;
-    double r = u * u + v * v;
-    if (r == 0 || r > 1) return selectFromNormalDistr();
-    double c = sqrt(-2 * log(r) / r);
-    return abs(u * c);
+
+  static int count = 0;
+  static double nextGaussianVal;
+  double firstGaussianVal, val1, val2, s;
+
+ if (count == 0) {
+    do {
+        val1 = 2 * ((double) rand() / (RAND_MAX)) - 1;  // between -1.0 and 1.0
+        val2 = 2 * ((double) rand() / (RAND_MAX)) - 1;  // between -1.0 and 1.0
+        s = val1 * val1 + val2 * val2;
+     } while (s >= 1 || s == 0);
+     double multiplier = sqrt(-2 * log(s)/s);
+     nextGaussianVal = val2 * multiplier;
+     firstGaussianVal = val1 * multiplier;
+     count = 1;
+     return firstGaussianVal;
+ }
+
+ count = 0;
+ return abs(nextGaussianVal);
 }
 
 
@@ -469,7 +482,7 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
+void InputOperation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
 
   // printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
   vector<double> all_K_gridCurvesVecNoDublicates;
