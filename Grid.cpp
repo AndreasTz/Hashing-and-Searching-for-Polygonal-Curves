@@ -18,7 +18,6 @@ vector<int> rVector;
 //INPUT 2 vector<double>
 //OUTPUT: 1 if they are equal, 0 otherwise!
 
-
 int CompareVectors(vector<double>* v1, vector<double>* v2)
 {
   if (v1->size() != v2->size()) return 0;
@@ -124,7 +123,8 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
   int k =0;
   int count =0; //poses fores vrika dublicate
 
-  for(int i = 1 ; i < *noofPointsInCurve; i++ ){
+  int timesForLoop = *noofPointsInCurve;
+  for(int i = 1 ; i < timesForLoop; i++ ){
 
     int thesi = i - count;
 
@@ -132,7 +132,6 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
       flag++ ;
 
       for(int j = 1 ; j < ((int)dimension) - 1; j++){
-        cout << newCurvePoints[thesi][j] << newCurvePoints[thesi][j+1];
 
         if(newCurvePoints[thesi-1][j] == newCurvePoints[thesi][j] ){
           flag++;
@@ -141,30 +140,23 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
       }
 
       if(flag == ((int) dimension) -1){
+        //cout << " We have a dublicate!  " << endl;
+        (*noofPointsInCurve)--;
 
-        cout << " We have a dublicate!  " << endl;
-        for(int k = i-count; k < *noofPointsInCurve-1; k++) {
+        for(int k = i-count; k < *noofPointsInCurve; k++) {
           for(int j = 0; j < dimension; j++) {
-
              newCurvePoints[k][j] = newCurvePoints[k+1][j];
-
             }
         }
-
         count++;
-        *noofPointsInCurve--;
       }
     }
       flag = 0;
   }
-//cout << "RM DUP: noofPointsInCurve: " << noofPointsInCurve << endl;
-//cout << "RM DUP: dimension: " << dimension << endl;
-//cout << "RM DUP: count: " << count << endl;
 
   for(int i = 0 ; i < *noofPointsInCurve -count;i++){
     for(int j = 0 ; j < (int)dimension ; j++){
       vecWithoutDublicates->push_back(newCurvePoints[i][j]);
-      cout << newCurvePoints[i][j] << " ";
       }
     }
    // printVector(vecWithoutDublicates);
@@ -228,7 +220,6 @@ void Concatenation(vector<double> *singleVec, vector<double> * resultVec){
   double elem;
 
   int sizeOfVec = singleVec->size();
-
   for(int i = 0 ; i < sizeOfVec; i++){
     elem = singleVec->back();
     singleVec->pop_back();
@@ -386,13 +377,16 @@ void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiv
   }
 }
 
+
+void createInitialCurveNoDublicates(int dimension, double ** curvePoints, int noofPointsInCurve, vector<vector<double>>* v, vector<double>* initialCurveNoDublicatesVec){
+    removeDuplicates(initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
+    v->push_back(*initialCurveNoDublicatesVec);
+}
+
+
 /*
 */
-void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
-  vector<double> initialCurveNoDublicatesVec;
-  removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
-  cout << "noofPointsInCurve: " << noofPointsInCurve <<endl;
-  v->push_back(initialCurveNoDublicatesVec);
+void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec, PreferedDetails * const details, double ** curvePoints , int noofPointsInCurve){
 
   double ** Grid = new double* [(int)dimension];
   for(int i = 0; i < (int)dimension; i++){
@@ -400,74 +394,58 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
   }
 
   vector< vector<double> > displacedFactorsForKTimes;
-  fillGrid(dimension, details->numberOfLocalitySensitiveFunctions, noofPointsInCurve, &displacedFactorsForKTimes, &initialCurveNoDublicatesVec, Grid);
-  //printGrid("Grid", dimension, dimension, Grid);
+  fillGrid(dimension, details->numberOfLocalitySensitiveFunctions, noofPointsInCurve, &displacedFactorsForKTimes, initialCurveNoDublicatesVec, Grid);
 
   vector<double> singleVecNoDublicates;
-//  vector<double> all_K_gridCurvesVecNoDublicates; ///concatenated vector
-
-  //for(int l = 0; l < details->numberOfHashingArrays; l++){  //L- fores
-    for(int i = 0; i < details->numberOfLocalitySensitiveFunctions; i++){  //k- fores
-
-      double ** displacedGrid = new double* [(int)dimension];
-
-      for(int i = 0; i < (int)dimension; i++){
-        displacedGrid[i] = new double[(int)dimension];
+  for(int i = 0; i < details->numberOfLocalitySensitiveFunctions; i++){  //k- fores
+    double ** displacedGrid = new double* [(int)dimension];
+    for(int i = 0; i < (int)dimension; i++){
+      displacedGrid[i] = new double[(int)dimension];
+    }
+    for(int i=0 ; i < (int)dimension ;i++){
+      for(int j = 0  ; j < (int)dimension ; j++ ){
+        displacedGrid[i][j] = Grid[i][j] + displacedFactorsForKTimes[i][j];
       }
-
-      for(int i=0 ; i < (int)dimension ;i++){
-        for(int j = 0  ; j < (int)dimension ; j++ ){
-          displacedGrid[i][j] = Grid[i][j] + displacedFactorsForKTimes[i][j];
-        }
-      }
+    }
     // printGrid("Displaced Grid", dimension, dimension, displacedGrid);
 
     //Sygkrisi me stoixeia tis kampulis
-      double ** newCurvePoints =  new double*[noofPointsInCurve];
-      for(int i = 0; i < noofPointsInCurve; i++){
-          newCurvePoints[i] = new double[(int)dimension];
-        }
+    double ** newCurvePoints =  new double*[noofPointsInCurve];
+    for(int i = 0; i < noofPointsInCurve; i++){
+      newCurvePoints[i] = new double[(int)dimension];
+    }
 
-      for(int i = 0; i < noofPointsInCurve ; i++){
-        for(int j = 0; j < (int)dimension; j++){ // gia kathe stili - aksona
-          int curElemPosition = i;
-          int axis = j;
-          newCurvePoints[i][j] = findMinPointInAnyAxis(dimension, axis, curvePoints[curElemPosition][axis], displacedGrid);
-        }
+    for(int i = 0; i < noofPointsInCurve ; i++){
+      for(int j = 0; j < (int)dimension; j++){ // gia kathe stili - aksona
+        int curElemPosition = i;
+        int axis = j;
+        newCurvePoints[i][j] = findMinPointInAnyAxis(dimension, axis, curvePoints[curElemPosition][axis], displacedGrid);
       }
+    }
     // printGrid("New Curve Grid", noofPointsInCurve, dimension, newCurvePoints);
 
     singleVecNoDublicates.clear();
     removeDuplicates(&singleVecNoDublicates, newCurvePoints, dimension, &noofPointsInCurve);
-    //cout << " SINGLE before concat" <<endl;
-    // printVector(&singleVecNoDublicates);
-    //cout << " SINGLE after concat" <<endl;
     Concatenation(&singleVecNoDublicates, all_K_gridCurvesVecNoDublicates);
-     //printVector(&singleVecNoDublicates);
-     //printGrid("New Curve Grid without Dublicates", noofPointsInCurve, dimension, newCurvePoints);
-
-    //  cout << "BUCK:: " << endl;
-    //  HashArray[l]-> printBucket(l);
-
 
     free(newCurvePoints);
     free(displacedGrid);
-  //}
+
   //cout << " K grid Curves are" << endl;
   //printVector(&all_K_gridCurvesVecNoDublicates);
-}
-free(Grid);
+  }
+  free(Grid);
 }
 
 
-HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
+HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
   //vector<double> initialCurveNoDublicatesVec;
   //removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
 
   ///v->push_back(initialCurveNoDublicatesVec);
   //H initialCurve ginetai sto prepareForLSH s auti tin ekdosi
   for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
-    PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, details, v, curvePoints , noofPointsInCurve);
+    PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
     //HASHING
   }
 }
@@ -482,37 +460,37 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void InputOperation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v){
+void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints){
 
-  // printGrid("Initial Curve", noofPointsInCurve ,dimension ,curvePoints);
-  vector<double> all_K_gridCurvesVecNoDublicates;
+  int hashKey;
+  if(!details -> typeOfHashChoice.compare("classic")){  //exoume enan pinaka katakermatismou
 
-for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
-    PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, details, v, curvePoints , noofPointsInCurve);
+    Element* hashElement = new Element(curve_id, initialCurveNoDublicatesVec);
+    hashKey = FindHashValue(initialCurveNoDublicatesVec);
+    HashArray[0]->put(hashKey, hashElement); // eisagwgi se hash table*/
 
-    Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
+  }
+  else{
+    vector<double> all_K_gridCurvesVecNoDublicates; //vector pou periexei kai tis k-grid curves
 
-    int hashKey;
-    if(!details -> typeOfHashChoice.compare("classic")){
+    for(int l = 0 ; l < details->numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
 
-      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
+      all_K_gridCurvesVecNoDublicates.clear();
+      /*h sunartisi dimiourgei k- grid curves kai tis topothetei sto antistoixo vector*/
+      PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
-    }
-    else{
-      vector<double> concatKVecHashFunc;
-      vector<double> singleHashFuncVec;
-
+      Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
+      vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
+      vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
+      /*evresi euklideias LSH sunartisis*/
       for(int i = 0 ; i < K_VEC ; i++){
           singleHashFuncVec.clear();
           createVecFunc(dimension, &all_K_gridCurvesVecNoDublicates, &singleHashFuncVec);
           Concatenation(&singleHashFuncVec, &concatKVecHashFunc);
       }
-
       hashKey = FindHashValue(&concatKVecHashFunc);
-
+      /*Topothetisi sto hash table*/
+      HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
     }
-
-    HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
   }
-
 }

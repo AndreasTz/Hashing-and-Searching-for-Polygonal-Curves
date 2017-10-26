@@ -30,13 +30,13 @@ string checkForContinue();
 int main(int argc , char const *argv[]){
 
 	string answer = "yes";
-
+	int times = 0;
 	while(!answer.compare("yes")){
 
 		PreferedDetails * details;
 		details = new PreferedDetails;
 
-		if(argc == 1) {
+		if(argc == 1 || times > 1) {
 
 				menu(details);
 
@@ -53,6 +53,7 @@ int main(int argc , char const *argv[]){
 			count = 0 ;
 		}
 		do{
+
     	vector<vector<double>> gridVector;
 
       /*********************************************************
@@ -62,21 +63,29 @@ int main(int argc , char const *argv[]){
       gridVector[i][n][m] //i = curveID - 1, n/m = diastaseis
       *********************************************************/
 
-			HashMap ** HashArray = new HashMap* [details->numberOfHashingArrays];
+			HashMap ** HashArray;
+			if(!details -> typeOfHashChoice.compare("classic")){
+
+				details->numberOfHashingArrays = 1;
+
+			}
+			HashArray = new HashMap* [details->numberOfHashingArrays];
 
 			for(int i = 0; i < details->numberOfHashingArrays ; i++){
 				HashArray[i] = new HashMap();
 			}
 
-			cout << "Molis dimiourgithikan L Hash Arrays :) " << endl;
-
     	HashEntry* bucket;
-			bucket = readingFromFile(details->queryFile , HashArray, details, &gridVector);
+
+			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector);
+	//		HashEntry* bucket2;
+	//		bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector);
 			count++;
 
 			//Free HashMap
 			//Metrisi xronou gia query
 		}while(count < 100);
+		times++;
 		answer = checkForContinue();
 	}
 		return 0;
@@ -93,6 +102,7 @@ string checkForContinue(){
 				cout << "Please enter yes or no" << endl;
 			}
 			else{
+				getchar();
 				return(answer);
 				//break;
 			}
@@ -126,7 +136,7 @@ void menu(PreferedDetails *details){
 
 	string numberofLocalitySensitiveFunctionsStr;
 
-	cout << " Please enter the path of number of Locality Sensitive Functions: (If you press enter the default values will be inserted) " << endl;
+	cout << " Please enter the number of Locality Sensitive Functions: (If you press enter the default values will be inserted) " << endl;
 	getline(cin, numberofLocalitySensitiveFunctionsStr) ;
 
 	if ( numberofLocalitySensitiveFunctionsStr == ""){
@@ -140,7 +150,7 @@ void menu(PreferedDetails *details){
 
 	}
 
-	cout << " Please enter the path of number of Hashing Arrays: (If you press enter the default values will be inserted) " << endl;
+	cout << " Please enter the number of Hashing Arrays: (If you press enter the default values will be inserted) " << endl;
 
 	string numberOfHashingArraysStr;
 	getline(cin, numberOfHashingArraysStr) ;

@@ -23,9 +23,9 @@ double findMinPointInAnyAxis(int dimension, int axis, double curvePoint, double 
 
 void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid);
 
-void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, int dimension ,int *noofPointsInCurve);
+void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int* noofPointsInCurve);
 
-void operation(int curve_id, double dimension, int R, double ** curvePoints , int noofPointsInCurve , HashMap ** const HashArray, PreferedDetails * const details, vector<vector<double>>* v);
+void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints);
 
 void printVector(vector<double>* t);
 
@@ -35,13 +35,17 @@ void selectT_Vector(vector<double>* t, double lenOfVec);
 
 void createVecFunc(double dimension,vector<double>* all_K_gridCurvesVecNoDublicates, vector<double>* singleHashFuncVec);
 
+void createInitialCurveNoDublicates(int dimension, double ** curvePoints, int noofPointsInCurve, vector<vector<double>>* v, vector<double>* initialCurveNoDublicatesVec);
+
 void findPoint(double dimension, vector<double> *resultVec, vector<double>* all_K_gridCurvesVecNoDublicatesCP);
 
 double findMinA(int dimension, int row ,int col, vector<vector <double> >* displacedFactor, vector<double>* initialCurveNoDublicatesVec);
 
 void fillGrid(int dimension, int numberOfLocalitySensitiveFunctions, vector< vector<double> >* vectorOfVectors ,vector<double>* initialCurveNoDublicatesVec, double** Grid);
 
-void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve);
+void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec, PreferedDetails * const details, double ** curvePoints , int noofPointsInCurve);
 
-HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve);
+HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve);
+
+
 #endif
