@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <fstream>
+#include <ctime>
 
 #include "FileReading.h"
 #include "Hashing.h"
@@ -27,6 +28,7 @@ void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails * deta
 void menu(PreferedDetails *details);
 void showPreferences(PreferedDetails *details);
 string checkForContinue();
+
 
 
 int main(int argc , char const *argv[]){
@@ -73,57 +75,26 @@ int main(int argc , char const *argv[]){
 				HashArray[i] = new HashMap();
 			}
 
+			vector<queryDetails> queryOfVector;
+
     	HashEntry* bucket;
-
-			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector);
-	//		HashEntry* bucket2;
-	//		bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector);
-			count++;
-
-			//Free HashMap
-			//Metrisi xronou gia query
-
-			//CLASSIC QUERING IN 1 HASH!
-
-			vector<double> concVectorTEST;
-			concVectorTEST.push_back(0.2);
-			concVectorTEST.push_back(0.2);
-			concVectorTEST.push_back(15);
-			concVectorTEST.push_back(24);
-			concVectorTEST.push_back(0.2);
-			concVectorTEST.push_back(0.2);
-
-			int keyTEST = FindHashValue(&concVectorTEST);
-			cout << "******** VRIKA TOSO KEY:: " << keyTEST << endl;
-
-			/*vector<HashEntry*> bucketVector;
-			for(int i = 0; i < details->numberOfHashingArrays; i++)
-				{
-					bucketVector.push_back(HashArray[i]->FindBucket());
-				}*/
-
-				HashEntry* bucketTEST;
-				int bucketIndexTEST;
-				bucketIndexTEST = HashArray[0]->FindBucket(keyTEST);
-				bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
-
-				vector<int> IDmatchVectorTEST;
-				HashEntry* curr;
-				curr = bucketTEST;
-				while (curr)
-				{
-					if (CompareVectors(curr->getVector(), &concVectorTEST))
-					{
-						IDmatchVectorTEST.push_back(curr->getID());
-						cout << "WE FOUND ONE!" << endl;
-						curr->PrintGridCurve();
-					}
-					curr = curr->next;
-				}
+			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector, &queryOfVector);
 
 
+			HashEntry* bucket2;
+			clock_t begin = clock();
+			bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector, &queryOfVector);
+			cout << "------------------------------------" << queryOfVector[0].queryID << endl;
+			clock_t end = clock();
+
+			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 			//////////////////////TESTING GROUND********************
+			count++;
+			//Free HashMap
 
+			for(int i = 0; i < details->numberOfHashingArrays ; i++){
+					HashArray[i]->~HashMap();
+			}
 
 		}while(count < 100);
 		times++;

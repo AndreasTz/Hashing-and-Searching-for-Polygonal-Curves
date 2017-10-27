@@ -6,7 +6,15 @@
 #define DEFAULT_L 3
 
 #include <string>
+#include <vector>
 using namespace std;
+
+struct queryDetails {
+		string queryID;
+		int distance;
+		vector<queryDetails> nearestDetails;
+};
+
 
 class PreferedDetails{
 

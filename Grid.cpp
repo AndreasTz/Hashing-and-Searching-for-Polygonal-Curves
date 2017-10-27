@@ -459,17 +459,35 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
 }
 
 
-HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve){
-  //vector<double> initialCurveNoDublicatesVec;
-  //removeDuplicates(&initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
-
-  ///v->push_back(initialCurveNoDublicatesVec);
-  //H initialCurve ginetai sto prepareForLSH s auti tin ekdosi
+/*void QOperation(double dimension, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, double ** curvePoints , int noofPointsInCurve){
+  vector<double> all_K_gridCurvesVecNoDublicates;
+  int keyTEST;
   for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
-    PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
-    //HASHING
+    PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
+
+    keyTEST = FindHashValue(&all_K_gridCurvesVecNoDublicates);
+    cout << "******** VRIKA TOSO KEY:: " << keyTEST << endl;
+
+    HashEntry* bucketTEST;
+    int bucketIndexTEST;
+    bucketIndexTEST = HashArray[0]->FindBucket(keyTEST);
+    bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
+
+    vector<int> IDmatchVectorTEST;
+    HashEntry* curr;
+    curr = bucketTEST;
+    while (curr)
+    {
+      if (CompareVectors(curr->getVector(), &all_K_gridCurvesVecNoDublicates))
+      {
+        IDmatchVectorTEST.push_back(curr->getID());
+        cout << "WE FOUND ONE!" << endl;
+        curr->PrintGridCurve();
+      }
+      curr = curr->next;
+    }
   }
-}
+}*/
 
 
 /*
@@ -481,11 +499,11 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints){
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector){
 
   static int curveID = 0;
   int hashKey;
-
+  Element* hashElement;
   vector<double> all_K_gridCurvesVecNoDublicates; //vector pou periexei kai tis k-grid curves
 
   for(int l = 0 ; l < details->numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
@@ -495,7 +513,7 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
     PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
     if(!details -> typeOfHashChoice.compare("probabilistic")){  //exoume enan pinaka katakermatismou
-      Element* hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
+      hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
       vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
       vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
 
@@ -508,11 +526,34 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
       hashKey = FindHashValue(&concatKVecHashFunc);
     }
     else{
-      Element* hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
+      hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
       hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
     }
+
+    if(type == 1){ //an einai input File
       /*Topothetisi sto hash table*/
-    HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
+      HashArray[l]->put(hashKey, hashElement);
+    }
+    else{ //an einai query File
+      HashEntry* bucketTEST;
+      int bucketIndexTEST;
+      bucketIndexTEST = HashArray[0]->FindBucket(hashKey);
+      bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
+
+      vector<int> IDmatchVectorTEST;
+      HashEntry* curr;
+      curr = bucketTEST;
+      while (curr)
+      {
+        if (CompareVectors(curr->getVector(), &all_K_gridCurvesVecNoDublicates))
+        {
+      	  IDmatchVectorTEST.push_back(curr->getID());
+      	  cout << "WE FOUND ONE!" << endl;
+      	  curr->PrintGridCurve();
+      	}
+      	curr = curr->next;
+      }
+    }
   }
 
   curveID++;

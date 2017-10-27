@@ -19,7 +19,7 @@ Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mi
 	output: -
 
 */
-HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v){
+HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<queryDetails> *queryOfVector){
 
 		ifstream myfile;
 		myfile.open(Filename.c_str());
@@ -31,36 +31,32 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 		InitialCurve *info = new InitialCurve();
 		int type = DetermineTypeOfFile(&myfile);
 
-		if(type == 1){ // is Input File
-			vector<int> curveNoOfPointsVec;
+		vector<int> curveNoOfPointsVec;
 
-  		string nextLineOfFile ;
-  		getline(myfile, nextLineOfFile);
-			cout << nextLineOfFile << endl;
-			while(!myfile.eof() && nextLineOfFile.compare("\n")){
+  	string nextLineOfFile ;
+  	getline(myfile, nextLineOfFile);
 
-				EstimateCurveDetails(info, nextLineOfFile, &curveNoOfPointsVec);
+    vector<double> initialCurveNoDublicatesVec;
+    int count = 0;
+    while(!myfile.eof() && nextLineOfFile.compare("\n")){
 
-				int curveid = atoi(info -> curve_id.c_str());
-				vector<double> initialCurveNoDublicatesVec;
+			EstimateCurveDetails(info, nextLineOfFile, &curveNoOfPointsVec);
+      queryOfVector->push_back(queryDetails());
+      queryOfVector[0][count].queryID = info->curve_id;
 
-				createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
+      int curveid = atoi(info -> curve_id.c_str());
+      initialCurveNoDublicatesVec.clear();
+			createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
 
-				Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints  );
-
-				getline(myfile, nextLineOfFile);
-
-				delete(info->curvePoints);
-			}
-
-		}
-		else { // is Query File
-			string nextLineOfFile;
-		//	while(!myfile.eof() && nextLineOfFile.compare("\n")){
-				nextLineOfFile =readQueryFileLineByLine(&myfile);
-		//		cout << nextLineOfFile << endl;
-		//	}
-		//	QueryOperation(&myfile, curveid, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
+      if(type == 1){ // is Input File
+			  Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 1, queryOfVector);
+      }
+      else{
+        Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 2, queryOfVector);
+      }
+			getline(myfile, nextLineOfFile);
+      count++;
+			delete(info->curvePoints);
 		}
 
 		return nullptr;
