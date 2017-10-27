@@ -47,5 +47,6 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
 
 HashEntry* QueryOperation(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, vector<vector<double>>* v, double ** curvePoints , int noofPointsInCurve);
 
+double multiplyVectors(vector<double>* vec1, vector<double>* vec2);
 
 #endif

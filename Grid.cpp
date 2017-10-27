@@ -274,6 +274,27 @@ void findPoint(double dimension, vector<double> *resultVec, vector<double> *all_
 }
 
 
+/*synartisi i opoia upologizei to eswteriko ginomeno duo dianismatwn
+Exei ginei mia mikri parallagi vevaia gia tin periptwsi pou ta dianismata den exoun to idio megethos
+Eisagoume ston vector vec2 (alliws v tou projection) epipleon stoixeia mono an |vec1| > |vec2|
+Giati theoroume oti to v prepei na simvadizei me to megalitero dianisma
+*/
+double multiplyVectors(vector<double>* vec1, vector<double>* vec2){
+  double result = 0.0;
+
+  if(vec1->size() > vec2->size()){ //Prepei na auksisoyme to megethos tou vector v
+    for(int j = 0 ; j < vec1->size() - vec2->size(); j++){
+      vec2->push_back(selectFromNormalDistr());
+    }
+  }
+
+//Exoume 2 theoritika isomegethi dianusmata
+  for(int i = 0 ; i < vec1->size() ; i ++ ){
+    result = result + (vec1[0][i]* vec2[0][i]);
+  }
+  return result;
+}
+
 /*
 Synartisi i opoia ypologizei to euklideio has
 me basi twn tipo h= floor((point * v + t) /w)
