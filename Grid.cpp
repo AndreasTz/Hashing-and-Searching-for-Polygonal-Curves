@@ -297,30 +297,45 @@ double multiplyVectors(vector<double>* vec1, vector<double>* vec2){
 
 /*
 Synartisi i opoia ypologizei to euklideio has
-me basi twn tipo h= floor((p * v + t) /w)
+me basi twn tipo h= floor((point * v + t) /w)
   input : dimension(diastasi twn simeiwn)
           all_K_gridCurvesVecNoDublicates (to concat twn k grid-curve)
           singleHashFuncVec (to apotelesma)
   output : -
 */
-vector<double> v; /* O vector v einai o antistoixos vector tis eksiswsis kai einai global epeidi den thelw na kratiountai ta stoixeia tou gia kathe fora pou mpainei*/
 void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublicates, vector<double>* singleHashFuncVec){
+  vector<double> v;
+  vector<double> tempResultVec;
 
   const int w = 4;
-  double shiftFactor;
+  double swiftFactor;
   double multRes;
   double sum;
   double divRes;
   int total;
 
-  shiftFactor = selectUniformlyRandomT((double)w);
+  for(int i = 0 ; i < all_K_gridCurvesVecNoDublicates->size(); i++){
 
-  multRes = multiplyVectors(all_K_gridCurvesVecNoDublicates, &v);
+//    v.clear();
 
-  sum = multRes + shiftFactor;
-  divRes = sum / w;
-  total =   floor(divRes);
-  singleHashFuncVec->push_back(total);
+    swiftFactor = selectUniformlyRandomT((double)w);
+
+    for(int i =0; i < dimension ; i++)
+      v.push_back(selectFromNormalDistr());
+
+    tempResultVec.clear();
+    findPoint(dimension,&tempResultVec, all_K_gridCurvesVecNoDublicates);
+
+    for(int i = 0 ; i < tempResultVec.size(); i++){
+      multRes = tempResultVec[i] * v[i];
+    }
+
+    sum = multRes + swiftFactor;
+    divRes = sum / w;
+    total =   floor(divRes);
+    singleHashFuncVec->push_back(total);
+
+  }
 
 }
 

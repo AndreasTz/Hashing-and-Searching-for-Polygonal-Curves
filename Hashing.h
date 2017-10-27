@@ -49,6 +49,11 @@ public:
       {
             return this->element;
       }
+
+      void nuke()
+      {
+        free(this->element);
+      }
 };
 
 class HashMap {
@@ -136,6 +141,17 @@ public:
 
       void put(int key, Element* elem)
       {
+            //TESTING ONLY
+            cout << "TO KEY EINAI:: " << key << endl;
+            cout << "TO VECTOR GRID CONC EINAI:: ";
+            for (int i = 0; i < elem->gridCurve->size(); i++)
+            {
+              cout << elem->gridCurve[0][i] << " ";
+            }
+            cout << endl;
+            cout << "KAI ID:: " << elem->ID << endl;
+            //TESTING ONLY
+
             int hash = (key % M % TABLE_SIZE);
             if (table[hash] == NULL) table[hash] = new HashEntry(key, elem);
             else
@@ -167,8 +183,10 @@ public:
       {
             for (int i = 0; i < TABLE_SIZE; i++)
                   if (table[i] != NULL)
-                        delete table[i];
-            delete[] table;
+                  {
+                        table[i]->nuke();
+                        free(table[i]);
+                  }
       }
 };
 
