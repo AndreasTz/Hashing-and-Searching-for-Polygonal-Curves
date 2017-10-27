@@ -66,11 +66,7 @@ int main(int argc , char const *argv[]){
       *********************************************************/
 
 			HashMap ** HashArray;
-			if(!details -> typeOfHashChoice.compare("classic")){
 
-				details->numberOfHashingArrays = 1;
-
-			}
 			HashArray = new HashMap* [details->numberOfHashingArrays];
 
 			for(int i = 0; i < details->numberOfHashingArrays ; i++){

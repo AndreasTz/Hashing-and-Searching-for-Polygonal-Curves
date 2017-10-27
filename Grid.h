@@ -25,7 +25,7 @@ void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printabl
 
 void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int* noofPointsInCurve);
 
-void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints);
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints);
 
 void printVector(vector<double>* t);
 

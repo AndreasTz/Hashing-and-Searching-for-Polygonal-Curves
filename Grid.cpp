@@ -481,40 +481,39 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-
-void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints){
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints){
 
   static int curveID = 0;
   int hashKey;
-  if(!details -> typeOfHashChoice.compare("classic")){  //exoume enan pinaka katakermatismou
 
-    Element* hashElement = new Element(curveID, initialCurveNoDublicatesVec);
-    hashKey = FindHashValue(initialCurveNoDublicatesVec);
-    HashArray[0]->put(hashKey, hashElement); // eisagwgi se hash table*/
+  vector<double> all_K_gridCurvesVecNoDublicates; //vector pou periexei kai tis k-grid curves
 
-  }
-  else{
-    vector<double> all_K_gridCurvesVecNoDublicates; //vector pou periexei kai tis k-grid curves
+  for(int l = 0 ; l < details->numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
 
-    for(int l = 0 ; l < details->numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
+    all_K_gridCurvesVecNoDublicates.clear();
+    /*h sunartisi dimiourgei k- grid curves kai tis topothetei sto antistoixo vector*/
+    PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
-      all_K_gridCurvesVecNoDublicates.clear();
-      /*h sunartisi dimiourgei k- grid curves kai tis topothetei sto antistoixo vector*/
-      PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
-
+    if(!details -> typeOfHashChoice.compare("probabilistic")){  //exoume enan pinaka katakermatismou
       Element* hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
       vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
       vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
+
       /*evresi euklideias LSH sunartisis*/
       for(int i = 0 ; i < K_VEC ; i++){
-          singleHashFuncVec.clear();
-          createVecFunc(dimension, &all_K_gridCurvesVecNoDublicates, &singleHashFuncVec);
-          Concatenation(&singleHashFuncVec, &concatKVecHashFunc);
+        singleHashFuncVec.clear();
+        createVecFunc(dimension, &all_K_gridCurvesVecNoDublicates, &singleHashFuncVec);
+        Concatenation(&singleHashFuncVec, &concatKVecHashFunc);
       }
       hashKey = FindHashValue(&concatKVecHashFunc);
-      /*Topothetisi sto hash table*/
-      HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
     }
+    else{
+      Element* hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
+      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
+    }
+      /*Topothetisi sto hash table*/
+    HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
   }
+
   curveID++;
 }

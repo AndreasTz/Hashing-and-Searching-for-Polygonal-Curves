@@ -46,7 +46,7 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 
 				createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
 
-				InputOperation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints  );
+				Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints  );
 
 				getline(myfile, nextLineOfFile);
 
