@@ -13,13 +13,18 @@ struct Element
 {
   int ID;
   vector<double>* gridCurve;
+  vector<double> gC;
 
   Element(int id, vector<double>* g)
   {
-    this->ID = id + 1;
-    this->gridCurve = g;
-    //cout << "EVALA TO ********:: " << g->size();
-    cout << "EVALA TO ********:: " << this->gridCurve[0][0] << endl;
+    this->ID = id;
+    cout << "EVALA TO ********:: " << g->size() << endl;
+    //cout << "EVALA TO ********:: " << this->gridCurve[0][0] << endl;
+    for (int i = 0; i < g->size(); i++)
+    {
+      this->gC.push_back(g[0][i]);
+    }
+    this->gridCurve = &gC;
   }
 };
 
@@ -52,16 +57,26 @@ public:
             return this->element;
       }
 
+      vector<double>* getVector()
+      {
+        return this->element->gridCurve;
+      }
+
+      int getID()
+      {
+        return this->element->ID;
+      }
+
       void PrintGridCurve()
       {
         cout << "To gridCurve me ID:: " << element->ID << " einai: " << endl;
         //cout << "TO SIZE EINAI::::::: " << element->gridCurve->size();
-        cout << "TO SIZE EINAI::::::: " << this->element->gridCurve->size();
-        /*for (int i = 0; i < element->gridCurve->size(); i++)
+        cout << "TO SIZE EINAI::::::: " << this->element->gridCurve->size() << endl;
+        for (int i = 0; i < element->gridCurve->size(); i++)
         {
           cout << element->gridCurve[0][i] << " ";
         }
-        cout << endl;*/
+        cout << endl;
       }
 
       void nuke()
@@ -180,6 +195,8 @@ public:
               kainourgio = new HashEntry(key, elem);
               curr->next = kainourgio;
             }
+            //cout << "PWS ***********************:: " << endl;
+            //table[hash]->PrintGridCurve();
       }
 
       int FindBucket(int key)

@@ -29,7 +29,6 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 		}
 
 		InitialCurve *info = new InitialCurve();
-
 		int type = DetermineTypeOfFile(&myfile);
 
 		if(type == 1){ // is Input File
@@ -46,7 +45,7 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 				vector<double> initialCurveNoDublicatesVec;
 
 				createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
-			
+
 				InputOperation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints  );
 
 				getline(myfile, nextLineOfFile);

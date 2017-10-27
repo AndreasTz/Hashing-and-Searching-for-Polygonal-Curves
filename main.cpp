@@ -111,11 +111,17 @@ int main(int argc , char const *argv[]){
 				bucketIndexTEST = HashArray[0]->FindBucket(keyTEST);
 				bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
 
+				vector<int> IDmatchVectorTEST;
 				HashEntry* curr;
 				curr = bucketTEST;
 				while (curr)
 				{
-					curr->PrintGridCurve();
+					if (CompareVectors(curr->getVector(), &concVectorTEST))
+					{
+						IDmatchVectorTEST.push_back(curr->getID());
+						cout << "WE FOUND ONE!" << endl;
+						curr->PrintGridCurve();
+					}
 					curr = curr->next;
 				}
 

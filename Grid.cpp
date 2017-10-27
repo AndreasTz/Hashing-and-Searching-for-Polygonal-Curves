@@ -40,7 +40,7 @@ void addtoR(vector<int>* v, int d)
   while (d)
   {
     v->push_back((rand() % 101));
-    cout << "RANDOM EINAI:: " << v->back() << endl;
+    //cout << "RANDOM EINAI:: " << v->back() << endl;
     d--;
   }
 }
@@ -481,12 +481,14 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
+
 void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints){
 
+  static int curveID = 0;
   int hashKey;
   if(!details -> typeOfHashChoice.compare("classic")){  //exoume enan pinaka katakermatismou
 
-    Element* hashElement = new Element(curve_id, initialCurveNoDublicatesVec);
+    Element* hashElement = new Element(curveID, initialCurveNoDublicatesVec);
     hashKey = FindHashValue(initialCurveNoDublicatesVec);
     HashArray[0]->put(hashKey, hashElement); // eisagwgi se hash table*/
 
@@ -500,7 +502,7 @@ void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, 
       /*h sunartisi dimiourgei k- grid curves kai tis topothetei sto antistoixo vector*/
       PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
-      Element* hashElement = new Element(curve_id, &all_K_gridCurvesVecNoDublicates);
+      Element* hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
       vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
       vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
       /*evresi euklideias LSH sunartisis*/
@@ -514,4 +516,5 @@ void InputOperation(int curve_id, double dimension, HashMap ** const HashArray, 
       HashArray[l]->put(hashKey, hashElement); // eisagwgi se hash table*/
     }
   }
+  curveID++;
 }
