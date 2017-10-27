@@ -16,8 +16,10 @@ struct Element
 
   Element(int id, vector<double>* g)
   {
-    this->ID = id;
+    this->ID = id + 1;
     this->gridCurve = g;
+    //cout << "EVALA TO ********:: " << g->size();
+    cout << "EVALA TO ********:: " << this->gridCurve[0][0] << endl;
   }
 };
 
@@ -48,6 +50,18 @@ public:
       Element* getElement()
       {
             return this->element;
+      }
+
+      void PrintGridCurve()
+      {
+        cout << "To gridCurve me ID:: " << element->ID << " einai: " << endl;
+        //cout << "TO SIZE EINAI::::::: " << element->gridCurve->size();
+        cout << "TO SIZE EINAI::::::: " << this->element->gridCurve->size();
+        /*for (int i = 0; i < element->gridCurve->size(); i++)
+        {
+          cout << element->gridCurve[0][i] << " ";
+        }
+        cout << endl;*/
       }
 
       void nuke()

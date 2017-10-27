@@ -62,8 +62,7 @@ int FindHashValue(vector<double>* concVector)
   int sumKey = 0;
   for (int i = 0; i < concVector->size(); i++)
   {
-    sumKey += (concVector->back() * rVector[i]);
-    concVector->pop_back();
+    sumKey += (concVector[0][i] * rVector[i]);
   }
   return sumKey;
 }

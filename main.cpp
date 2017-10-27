@@ -7,6 +7,8 @@
 #include "Hashing.h"
 #include "HelpClasses.h"
 
+#include "Grid.h"
+
 #define DEFAULT_K 2
 #define DEFAULT_L 3
 #define minus_d  "-d"
@@ -84,8 +86,46 @@ int main(int argc , char const *argv[]){
 
 			//Free HashMap
 			//Metrisi xronou gia query
+
+			//CLASSIC QUERING IN 1 HASH!
+
+			vector<double> concVectorTEST;
+			concVectorTEST.push_back(0.2);
+			concVectorTEST.push_back(0.2);
+			concVectorTEST.push_back(15);
+			concVectorTEST.push_back(24);
+			concVectorTEST.push_back(0.2);
+			concVectorTEST.push_back(0.2);
+
+			int keyTEST = FindHashValue(&concVectorTEST);
+			cout << "******** VRIKA TOSO KEY:: " << keyTEST << endl;
+
+			/*vector<HashEntry*> bucketVector;
+			for(int i = 0; i < details->numberOfHashingArrays; i++)
+				{
+					bucketVector.push_back(HashArray[i]->FindBucket());
+				}*/
+
+				HashEntry* bucketTEST;
+				int bucketIndexTEST;
+				bucketIndexTEST = HashArray[0]->FindBucket(keyTEST);
+				bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
+
+				HashEntry* curr;
+				curr = bucketTEST;
+				while (curr)
+				{
+					curr->PrintGridCurve();
+					curr = curr->next;
+				}
+
+
+			//////////////////////TESTING GROUND********************
+
+
 		}while(count < 100);
 		times++;
+
 		answer = checkForContinue();
 	}
 		return 0;
