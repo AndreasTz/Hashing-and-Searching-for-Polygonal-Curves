@@ -15,26 +15,24 @@
 using namespace std;
 
 vector<int> rVector;
-
 void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string> nameVector, vector<double> qVector, queryDetails* QD)
 {
-  /*double TrueDistance = FrechetDistance((*curveVector[0]), qVector);
-  QD->LSHDistance = TrueDistance;
-  QD->trueDistance = TrueDistance;
-  QD->LSHNearestNeighbor = (*nameVector)[0];
-  QD->trueNearestNeighbor = (*nameVector)[0];
-
-  for (int i = 0; i < curveVector[0].size(); i++)
-  {
-    if (TrueDistance > FrechetDistance((*curveVector)[i], qVector))
-    {
-      TrueDistance = FrechetDistance((*curveVector)[i], qVector);
-      QD->LSHDistance = TrueDistance;
-      QD->trueDistance = TrueDistance;
-      QD->LSHNearestNeighbor = (*nameVector)[i];
-      QD->trueNearestNeighbor = (*nameVector)[i];
-    }
-  }*/
+	double TrueDistance = FrechetDistance(&curveVector[0][0], &qVector, 1);
+  	QD->LSHDistance = TrueDistance;
+  	QD->trueDistance = TrueDistance;
+  	QD->LSHNearestNeighbor = nameVector[0][0];
+  	QD->trueNearestNeighbor = nameVector[0][0];
+  	for (int i = 0; i < curveVector[0].size(); i++)
+  	{
+    	if (TrueDistance > FrechetDistance(&curveVector[0][i], &qVector, 1))
+    	{
+	      	TrueDistance = FrechetDistance(&curveVector[0][i], &qVector, 1);
+	      	QD->LSHDistance = TrueDistance;
+	      	QD->trueDistance = TrueDistance;
+	      	QD->LSHNearestNeighbor = nameVector[0][i];
+	      	QD->trueNearestNeighbor = nameVector[0][i];
+	    }
+    }	
 }
 
 //INPUT 2 vector<double>
