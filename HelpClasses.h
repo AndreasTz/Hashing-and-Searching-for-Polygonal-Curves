@@ -11,8 +11,14 @@ using namespace std;
 
 struct queryDetails {
 		string queryID;
-		int distance;
-		vector<queryDetails> nearestDetails;
+		bool foundGridCurve;
+		int LSHDistance;
+		int trueDistance;
+
+		string trueNearestNeighbor;
+		string LSHNearestNeighbor;
+
+		vector<string> NNcurves;
 };
 
 

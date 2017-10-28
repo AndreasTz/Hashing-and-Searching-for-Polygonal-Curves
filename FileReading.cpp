@@ -41,8 +41,6 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
     while(!myfile.eof() && nextLineOfFile.compare("\n")){
 
 			EstimateCurveDetails(info, nextLineOfFile, &curveNoOfPointsVec);
-      queryOfVector->push_back(queryDetails());
-      queryOfVector[0][count].queryID = info->curve_id;
 
       int curveid = atoi(info -> curve_id.c_str());
       initialCurveNoDublicatesVec.clear();
@@ -52,6 +50,9 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 			  Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 1, queryOfVector);
       }
       else{
+				queryOfVector->push_back(queryDetails());
+				queryOfVector[0][count].queryID = info->curve_id;
+
         Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 2, queryOfVector);
       }
 			getline(myfile, nextLineOfFile);

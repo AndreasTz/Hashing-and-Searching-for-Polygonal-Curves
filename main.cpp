@@ -90,7 +90,6 @@ int main(int argc , char const *argv[]){
 			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 			//////////////////////TESTING GROUND********************
 			count++;
-			//Free HashMap
 
 			for(int i = 0; i < details->numberOfHashingArrays ; i++){
 					HashArray[i]->~HashMap();
