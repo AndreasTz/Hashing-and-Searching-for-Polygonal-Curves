@@ -19,7 +19,7 @@ Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mi
 	output: -
 
 */
-HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<queryDetails> *queryOfVector){
+HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<string>* nameVector, vector<queryDetails> *queryOfVector){
 
 		ifstream myfile;
 		myfile.open(Filename.c_str());
@@ -47,13 +47,13 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 			createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
 
       if(type == 1){ // is Input File
-			  Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 1, queryOfVector);
+			  Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 1, queryOfVector, v, nameVector);
       }
       else{
 				queryOfVector->push_back(queryDetails());
 				queryOfVector[0][count].queryID = info->curve_id;
 
-        Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 2, queryOfVector);
+        Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 2, queryOfVector, v, nameVector);
       }
 			getline(myfile, nextLineOfFile);
       count++;

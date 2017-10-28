@@ -59,6 +59,7 @@ int main(int argc , char const *argv[]){
 		do{
 
     	vector<vector<double>> gridVector;
+			vector<string> nameVector;
 
       /*********************************************************
       //for each curve we do
@@ -78,12 +79,12 @@ int main(int argc , char const *argv[]){
 			vector<queryDetails> queryOfVector;
 
     	HashEntry* bucket;
-			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector, &queryOfVector);
+			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector, &nameVector, &queryOfVector);
 
 
 			HashEntry* bucket2;
 			clock_t begin = clock();
-			bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector, &queryOfVector);
+			bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector, &nameVector, &queryOfVector);
 			cout << "------------------------------------" << queryOfVector[0].queryID << endl;
 			clock_t end = clock();
 

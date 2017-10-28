@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include <vector
+#include <vector>
 
 //Calculating distance of 2 points in d-dimension space
 //input: 2 vectors, the points in order you want to calculate the distance from, the dimensions of space

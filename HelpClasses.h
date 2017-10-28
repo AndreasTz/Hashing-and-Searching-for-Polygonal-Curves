@@ -19,6 +19,11 @@ struct queryDetails {
 		string LSHNearestNeighbor;
 
 		vector<string> NNcurves;
+
+		queryDetails()
+		{
+			this->foundGridCurve = false;
+		}
 };
 
 

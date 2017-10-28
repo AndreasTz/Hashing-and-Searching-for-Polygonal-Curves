@@ -27,7 +27,7 @@ class InitialCurve{
       */
 };
 
-HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<queryDetails> *queryOfVector);
+HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<string>* nameVector, vector<queryDetails> *queryOfVector);
 void EstimateCurveDetails(InitialCurve *info, string nextLineOfFile, vector<int> *curveNoOfPointsVec);
 int DetermineTypeOfFile(ifstream* myfile);
 string readQueryFileLineByLine(ifstream *myfile);

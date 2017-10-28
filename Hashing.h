@@ -12,11 +12,13 @@ const int M = 1000000;
 struct Element
 {
   int ID;
+  string mName;
   vector<double>* gridCurve;
   vector<double> gC;
 
-  Element(int id, vector<double>* g)
+  Element(string name, int id, vector<double>* g)
   {
+    this->mName = name;
     this->ID = id;
     cout << "EVALA TO ********:: " << g->size() << endl;
     //cout << "EVALA TO ********:: " << this->gridCurve[0][0] << endl;

@@ -5,6 +5,8 @@
 #include "HelpClasses.h"
 #include <vector>
 
+void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string>* nameVector, vector<double>* qVector, queryDetails* QD);
+
 int CompareVectors(vector<double>* v1, vector<double>* v2);
 
 int CompareHashElementVectors(Element* ele1, Element* ele2);
@@ -25,7 +27,7 @@ void printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printabl
 
 void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int* noofPointsInCurve);
 
-void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector);
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector, vector<vector<double>>* gridCurve, vector<string>* nameVector);
 //void QOperation(double dimension, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details,double ** curvePoints , int noofPointsInCurve);
 
 void printVector(vector<double>* t);

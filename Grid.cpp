@@ -6,6 +6,7 @@
 #include "Hashing.h"
 #include "HelpClasses.h"
 #include "Grid.h"
+#include "frechet.h"
 
 
 #define delta 1
@@ -14,6 +15,27 @@
 using namespace std;
 
 vector<int> rVector;
+
+void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string> nameVector, vector<double> qVector, queryDetails* QD)
+{
+  /*double TrueDistance = FrechetDistance((*curveVector[0]), qVector);
+  QD->LSHDistance = TrueDistance;
+  QD->trueDistance = TrueDistance;
+  QD->LSHNearestNeighbor = (*nameVector)[0];
+  QD->trueNearestNeighbor = (*nameVector)[0];
+
+  for (int i = 0; i < curveVector[0].size(); i++)
+  {
+    if (TrueDistance > FrechetDistance((*curveVector)[i], qVector))
+    {
+      TrueDistance = FrechetDistance((*curveVector)[i], qVector);
+      QD->LSHDistance = TrueDistance;
+      QD->trueDistance = TrueDistance;
+      QD->LSHNearestNeighbor = (*nameVector)[i];
+      QD->trueNearestNeighbor = (*nameVector)[i];
+    }
+  }*/
+}
 
 //INPUT 2 vector<double>
 //OUTPUT: 1 if they are equal, 0 otherwise!
@@ -499,7 +521,7 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector){
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector, vector<vector<double>>* gridCurve, vector<string>* nameVector){
 
   static int curveID = 0;
   int hashKey;
@@ -513,7 +535,7 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
     PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
     if(!details -> typeOfHashChoice.compare("probabilistic")){  //exoume enan pinaka katakermatismou
-      hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
+      hashElement = new Element("k", curveID, &all_K_gridCurvesVecNoDublicates);
       vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
       vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
 
@@ -526,7 +548,7 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
       hashKey = FindHashValue(&concatKVecHashFunc);
     }
     else{
-      hashElement = new Element(curveID, &all_K_gridCurvesVecNoDublicates);
+      hashElement = new Element("k", curveID, &all_K_gridCurvesVecNoDublicates);
       hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
     }
 
@@ -535,6 +557,10 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
       HashArray[l]->put(hashKey, hashElement);
     }
     else{ //an einai query File
+
+      //initializing queryDetails
+      queryDetails* QD = new queryDetails();
+
       HashEntry* bucketTEST;
       int bucketIndexTEST;
       bucketIndexTEST = HashArray[0]->FindBucket(hashKey);
@@ -549,9 +575,20 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
         {
       	  IDmatchVectorTEST.push_back(curr->getID());
       	  cout << "WE FOUND ONE!" << endl;
+          QD->foundGridCurve = true;
       	  curr->PrintGridCurve();
       	}
       	curr = curr->next;
+      }
+
+      //if we find no grid matches in bucket we brute force!
+      if (QD->foundGridCurve == false)
+      {
+        //ExhaustiveSearch(gridCurve, nameVector, &all_K_gridCurvesVecNoDublicates, QD);
+      }
+      else
+      {
+        //TargettedSearch(..);
       }
     }
   }
