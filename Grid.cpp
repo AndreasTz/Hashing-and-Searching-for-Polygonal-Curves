@@ -15,77 +15,66 @@
 using namespace std;
 
 vector<int> rVector;
-void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string>* nameVector, vector<double>* qVector, queryDetails* QD)
+void ExhaustiveSearch(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& qVector, queryDetails& QD)
 {
-	double TrueDistance = FrechetDistance(&curveVector[0][0], qVector, 1);
+	double TrueDistance = FrechetDistance(curveVector[0], qVector, 1);
 
-  QD->LSHDistance = TrueDistance;
-  QD->trueDistance = TrueDistance;
-  QD->LSHNearestNeighbor = nameVector[0][0];
-  QD->trueNearestNeighbor = nameVector[0][0];
-cout << " OK" << endl;
+  QD.LSHDistance = QD.trueDistance = TrueDistance;
+  QD.LSHNearestNeighbor = QD.trueNearestNeighbor = nameVector[0];
 
-  for (int i = 0; i < curveVector[0].size(); i++)
+  for (unsigned i = 0; i < curveVector.size(); ++i)
   {
-  	if (TrueDistance > FrechetDistance(&curveVector[0][i], qVector, 1))
+  	if (TrueDistance > FrechetDistance(curveVector[i], qVector, 1))
   	{
-	    TrueDistance = FrechetDistance(&curveVector[0][i], qVector, 1);
-	  	QD->LSHDistance = TrueDistance;
-	    QD->trueDistance = TrueDistance;
-	    QD->LSHNearestNeighbor = nameVector[0][i];
-	    QD->trueNearestNeighbor = nameVector[0][i];
+	    TrueDistance = FrechetDistance(curveVector[i], qVector, 1);
+	  	QD.LSHDistance = QD.trueDistance = TrueDistance;
+	    QD.LSHNearestNeighbor = QD.trueNearestNeighbor = nameVector[i];
 	  }
   }
 }
 
 //INPUT 2 vector<double>
-//OUTPUT: 1 if they are equal, 0 otherwise!
+//OUTPUT: true if they are equal, false otherwise!
 
-int CompareVectors(vector<double>* v1, vector<double>* v2)
+bool CompareVectors(const vector<double>& v1, const vector<double>& v2)
 {
-  if (v1->size() != v2->size()) return 0;
-  for (int i; i<v1->size(); i++)
+  if (v1.size() != v2.size()) return false;
+  for (unsigned i; i < v1.size(); ++i)
   {
-    if (v1[0][i] != v2[0][i]) return 0;
+    if (v1[i] != v2[i]) return false;
   }
-  return 1;
+  return true;
 }
 
 //pretified for element data struct
-int CompareHashElementVectors(Element* ele1, Element* ele2)
+bool CompareHashElementVectors(const Element& ele1, const Element& ele2)
 {
-  return CompareVectors(ele1->gridCurve, ele2->gridCurve);
+  return CompareVectors(ele1.gC, ele2.gC);
 }
 
 //adding size to Rvector when needed
-void addtoR(vector<int>* v, int d)
+void addtoR(vector<int>& v, int d)
 {
   while (d)
   {
-    v->push_back((rand() % 101));
+    v.push_back((rand() % 101));
     //cout << "RANDOM EINAI:: " << v->back() << endl;
     d--;
   }
 }
 
-//idk
-void deleteR(vector<int>* v)
-{
-  v->clear();
-}
-
 //INPUT v<d>*
 //OUTPUT int type hashValue (which will be changed to index in Hashing.cpp functions)
-int FindHashValue(vector<double>* concVector)
+int FindHashValue(const vector<double>& concVector)
 {
-  if (rVector.size() < concVector->size())
+  if (rVector.size() < concVector.size())
   {
-    addtoR(&rVector, (concVector->size() - rVector.size()));
+    addtoR(rVector, (concVector.size() - rVector.size()));
   }
   int sumKey = 0;
-  for (int i = 0; i < concVector->size(); i++)
+  for (unsigned i = 0; i < concVector.size(); i++)
   {
-    sumKey += (concVector[0][i] * rVector[i]);
+    sumKey += (concVector[i] * rVector[i]);
   }
   return sumKey;
 }
@@ -100,9 +89,7 @@ double selectUniformlyRandomT(double maxValue){
 
   double min = 0.0;
   double max = maxValue ;
-  double j = min + (double) ((max-min+1.0) * (rand() / (RAND_MAX + 1.0)));
-
-  return j;
+  return min + (double) ((max-min+1.0) * (rand() / (RAND_MAX + 1.0)));
 }
 
 
@@ -114,7 +101,7 @@ O upologismos ginetai simeio simeio gia kathe aksona ksexorista.
           displacedGrid
   output : minElem (To kontinotero simeio tou grid)
 */
-double findMinPointInAnyAxis(double dimension, int axis, double curvePoint, double ** displacedGrid){
+double findMinPointInAnyAxis(double dimension, int axis, double curvePoint, const vector<vector<double>>& displacedGrid){
 
   double MinDistance = curvePoint - displacedGrid[0][axis];
   double minElement = displacedGrid[0][axis];
@@ -139,13 +126,12 @@ Sunartisi i opoia apallasei apo diplotypes emfaniseis idiwn simeiwn
         noofPointsInCurve (plithos simeiwn tis kampilis)
   output: -
 */
-void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoints, double dimension ,int* noofPointsInCurve){
+void removeDuplicates(vector<double>& vecWithoutDublicates, vector<vector<double>>& newCurvePoints, double dimension ,int& noofPointsInCurve){
 
   int flag = 0 ;
-  int k =0;
   int count =0; //poses fores vrika dublicate
 
-  int timesForLoop = *noofPointsInCurve;
+  int timesForLoop = noofPointsInCurve;
   for(int i = 1 ; i < timesForLoop; i++ ){
 
     int thesi = i - count;
@@ -163,9 +149,9 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
 
       if(flag == ((int) dimension) -1){
         //cout << " We have a dublicate!  " << endl;
-        (*noofPointsInCurve)--;
+        noofPointsInCurve--;
 
-        for(int k = i-count; k < *noofPointsInCurve; k++) {
+        for(int k = i-count; k < noofPointsInCurve; k++) {
           for(int j = 0; j < dimension; j++) {
              newCurvePoints[k][j] = newCurvePoints[k+1][j];
             }
@@ -176,9 +162,9 @@ void removeDuplicates(vector<double>* vecWithoutDublicates, double **newCurvePoi
       flag = 0;
   }
 
-  for(int i = 0 ; i < *noofPointsInCurve -count;i++){
+  for(int i = 0 ; i < noofPointsInCurve -count;i++){
     for(int j = 0 ; j < (int)dimension ; j++){
-      vecWithoutDublicates->push_back(newCurvePoints[i][j]);
+      vecWithoutDublicates.push_back(newCurvePoints[i][j]);
       }
     }
    // printVector(vecWithoutDublicates);
@@ -193,7 +179,7 @@ Sunartisi i opoia ektypwnei ta simeia tou ekastwte grid
            printableGrid (O pinakas pou theloume na ektypwthei)
   output : -
 */
-void  printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid){
+void  printGrid(const string& typeOfGrid, int noofRows ,int noofCols ,double ** printableGrid){
 
     cout <<  typeOfGrid  << endl;
     for(int i=0 ; i < noofRows ;i++){
@@ -207,10 +193,10 @@ void  printGrid(string typeOfGrid, int noofRows ,int noofCols ,double ** printab
 
 
 /* Sunartisi ektipwsis vector*/
-void printVector(vector<double>* t){
+void printVector(const vector<double>& t){
   cout << "VECTOR: " << endl;
-  for (vector<double>::const_iterator i = t->begin(); i != t->end(); ++i)
-    cout << (double)*i << ' ';
+  for (double i : t)
+    cout << i << ' ';
   cout << " ***" << endl;
 }
 
@@ -218,14 +204,14 @@ void printVector(vector<double>* t){
 /*
 Synartisi epilogis tyxaiou vector pros metatopisi
 */
-void selectT_Vector(vector<double>* t, double lenOfVec){
-  t->push_back(selectUniformlyRandomT(lenOfVec));
+void selectT_Vector(vector<double>& t, double lenOfVec){
+  t.push_back(selectUniformlyRandomT(lenOfVec));
 
   int newt;
   for(int i = 1; i < (int)lenOfVec; i++){ //gia kathe diastasi
 
     newt = selectUniformlyRandomT(lenOfVec);
-    t->push_back(newt);
+    t.push_back(newt);
 
   }
    //printVector(t);
@@ -238,14 +224,14 @@ Synartisi i opoia vazei ola ta simeia mias grid curve se ena pio geniko vector p
           resultVec (vector pou ginetai concat)
   output : -
 */
-void Concatenation(vector<double> *singleVec, vector<double> * resultVec){
+void Concatenation(vector<double>& singleVec, vector<double>& resultVec){
   double elem;
 
-  int sizeOfVec = singleVec->size();
+  int sizeOfVec = singleVec.size();
   for(int i = 0 ; i < sizeOfVec; i++){
-    elem = singleVec->back();
-    singleVec->pop_back();
-    resultVec -> push_back(elem);
+    elem = singleVec.back();
+    singleVec.pop_back();
+    resultVec.push_back(elem);
   }
 }
 
@@ -265,7 +251,7 @@ double selectFromNormalDistr() {
         val2 = 2 * ((double) rand() / (RAND_MAX)) - 1;  // between -1.0 and 1.0
         s = val1 * val1 + val2 * val2;
      } while (s >= 1 || s == 0);
-     double multiplier = sqrt(-2 * log(s)/s);
+     const double multiplier = sqrt(-2 * log(s)/s);
      nextGaussianVal = val2 * multiplier;
      firstGaussianVal = val1 * multiplier;
      count = 1;
@@ -284,14 +270,14 @@ input : dimension(diastasi simeiou)
         all_K_gridCurvesVecNoDublicatesCP (vector pou periexei kai tis k kampiles plegmatos )
 output: -
 */
-void findPoint(double dimension, vector<double> *resultVec, vector<double> *all_K_gridCurvesVecNoDublicatesCP){
+void findPoint(double dimension, vector<double>& resultVec, vector<double>& all_K_gridCurvesVecNoDublicatesCP){
   double Elem;
-  resultVec->clear();
+  resultVec.clear();
   for(int i = 0; i < dimension ; i++){
 
-    Elem = all_K_gridCurvesVecNoDublicatesCP->back();
-    all_K_gridCurvesVecNoDublicatesCP->pop_back();
-    resultVec->push_back(Elem);
+    Elem = all_K_gridCurvesVecNoDublicatesCP.back();
+    all_K_gridCurvesVecNoDublicatesCP.pop_back();
+    resultVec.push_back(Elem);
   }
 }
 
@@ -301,18 +287,18 @@ Exei ginei mia mikri parallagi vevaia gia tin periptwsi pou ta dianismata den ex
 Eisagoume ston vector vec2 (alliws v tou projection) epipleon stoixeia mono an |vec1| > |vec2|
 Giati theoroume oti to v prepei na simvadizei me to megalitero dianisma
 */
-double multiplyVectors(vector<double>* vec1, vector<double>* vec2){
+double multiplyVectors(const vector<double>& vec1, vector<double>& vec2){
   double result = 0.0;
 
-  if(vec1->size() > vec2->size()){ //Prepei na auksisoyme to megethos tou vector v
-    for(int j = 0 ; j < vec1->size() - vec2->size(); j++){
-      vec2->push_back(selectFromNormalDistr());
+  if(vec1.size() > vec2.size()){ //Prepei na auksisoyme to megethos tou vector v
+    for(unsigned j = 0 ; j < vec1.size() - vec2.size(); ++j){
+      vec2.push_back(selectFromNormalDistr());
     }
   }
 
 //Exoume 2 theoritika isomegethi dianusmata
-  for(int i = 0 ; i < vec1->size() ; i ++ ){
-    result = result + (vec1[0][i]* vec2[0][i]);
+  for(unsigned i = 0 ; i < vec1.size() ; ++i){
+    result = result + (vec1[i]* vec2[i]);
   }
   return result;
 }
@@ -325,7 +311,7 @@ me basi twn tipo h= floor((point * v + t) /w)
           singleHashFuncVec (to apotelesma)
   output : -
 */
-void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublicates, vector<double>* singleHashFuncVec){
+void createVecFunc(double dimension, vector<double>& all_K_gridCurvesVecNoDublicates, vector<double>& singleHashFuncVec){
   vector<double> v;
   vector<double> tempResultVec;
 
@@ -336,7 +322,7 @@ void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublic
   double divRes;
   int total;
 
-  for(int i = 0 ; i < all_K_gridCurvesVecNoDublicates->size(); i++){
+  for(unsigned i = 0 ; i < all_K_gridCurvesVecNoDublicates.size(); i++){
 
 //    v.clear();
 
@@ -346,16 +332,16 @@ void createVecFunc(double dimension, vector<double>* all_K_gridCurvesVecNoDublic
       v.push_back(selectFromNormalDistr());
 
     tempResultVec.clear();
-    findPoint(dimension,&tempResultVec, all_K_gridCurvesVecNoDublicates);
+    findPoint(dimension, tempResultVec, all_K_gridCurvesVecNoDublicates);
 
-    for(int i = 0 ; i < tempResultVec.size(); i++){
+    for(unsigned i = 0 ; i < tempResultVec.size(); i++){
       multRes = tempResultVec[i] * v[i];
     }
 
     sum = multRes + swiftFactor;
     divRes = sum / w;
     total =   floor(divRes);
-    singleHashFuncVec->push_back(total);
+    singleHashFuncVec.push_back(total);
 
   }
 
@@ -369,10 +355,10 @@ Synartisi i opoia upologizei to mikrotero a_i gia tin dimiourgia tou arxikou Gri
           initialCurveNoDublicatesVec (arxiki kampili xwris diplotipa)
   output: minA(to mikrotero a_i)
 */
-double findMinA(int dimension, int row ,int col, vector<vector <double> >* displacedFactor, vector<double>* initialCurveNoDublicatesVec){
+double findMinA(int dimension, int row ,int col, const vector<vector <double> > displacedFactor, const vector<double>& initialCurveNoDublicatesVec){
 
-  double *a = new double [initialCurveNoDublicatesVec->size()];
-  double diff = initialCurveNoDublicatesVec[0][row] - displacedFactor[0][row][0];
+  double *a = new double [initialCurveNoDublicatesVec.size()];
+  double diff = initialCurveNoDublicatesVec[row] - displacedFactor[row][0];
   if(diff < 0){
     diff = diff * (-1);
   }
@@ -381,7 +367,7 @@ double findMinA(int dimension, int row ,int col, vector<vector <double> >* displ
 
   double minA = a[0];
   for(int i =1 ; i < dimension; i++){
-    diff = initialCurveNoDublicatesVec[0][col] - displacedFactor[0][row][i];
+    diff = initialCurveNoDublicatesVec[col] - displacedFactor[row][i];
     if(diff < 0){
       diff = diff * (-1);
     }
@@ -405,12 +391,12 @@ Sunartisi i opoia "gemizei" to arxiko Grid me basi to veltisto A.
         Grid (to Grid pou gemizoume)
   output: -
 */
-void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiveFunctions, vector< vector<double> >* vectorOfVectors ,vector<double>* initialCurveNoDublicatesVec, double** Grid){
+void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiveFunctions, vector< vector<double> >& vectorOfVectors ,vector<double>& initialCurveNoDublicatesVec, vector<vector<double>>& Grid){
 
   for(int i = 0; i < numberOfLocalitySensitiveFunctions; i++){
     vector<double> rowVec;
-    selectT_Vector(&rowVec,dimension);
-    vectorOfVectors->push_back(rowVec);
+    selectT_Vector(rowVec, dimension);
+    vectorOfVectors.push_back(rowVec);
   }
   double value;
   for(int i=0 ; i < (int)dimension; i++){
@@ -422,30 +408,29 @@ void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiv
 }
 
 
-void createInitialCurveNoDublicates(int dimension, double ** curvePoints, int noofPointsInCurve, vector<vector<double>>* v, vector<double>* initialCurveNoDublicatesVec){
-    removeDuplicates(initialCurveNoDublicatesVec, curvePoints, dimension, &noofPointsInCurve);
-    v->push_back(*initialCurveNoDublicatesVec);
+void createInitialCurveNoDublicates(int dimension, vector<vector<double>>& curvePoints, int noofPointsInCurve, vector<vector<double>>& v, vector<double>& initialCurveNoDublicatesVec){
+    removeDuplicates(initialCurveNoDublicatesVec, curvePoints, dimension, noofPointsInCurve);
+    v.push_back(initialCurveNoDublicatesVec);
 }
 
 
 /*
 */
-void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublicates, vector<double> *initialCurveNoDublicatesVec, PreferedDetails * const details, double ** curvePoints , int noofPointsInCurve){
-
-  double ** Grid = new double* [(int)dimension];
-  for(int i = 0; i < (int)dimension; i++){
-    Grid[i] = new double[(int)dimension];
-  }
+void PrepareForLSH(double dimension,
+                   vector<double>& all_K_gridCurvesVecNoDublicates,
+                   vector<double>& initialCurveNoDublicatesVec,
+                   const PreferedDetails& details,
+                   std::vector<std::vector<double>>& curvePoints,
+                   int noofPointsInCurve)
+{
+  vector<vector<double>> Grid((int)dimension, vector<double>((int)dimension));
 
   vector< vector<double> > displacedFactorsForKTimes;
-  fillGrid(dimension, details->numberOfLocalitySensitiveFunctions, noofPointsInCurve, &displacedFactorsForKTimes, initialCurveNoDublicatesVec, Grid);
+  fillGrid(dimension, details.numberOfLocalitySensitiveFunctions, noofPointsInCurve, displacedFactorsForKTimes, initialCurveNoDublicatesVec, Grid);
 
   vector<double> singleVecNoDublicates;
-  for(int i = 0; i < details->numberOfLocalitySensitiveFunctions; i++){  //k- fores
-    double ** displacedGrid = new double* [(int)dimension];
-    for(int i = 0; i < (int)dimension; i++){
-      displacedGrid[i] = new double[(int)dimension];
-    }
+  for(int i = 0; i < details.numberOfLocalitySensitiveFunctions; i++){  //k- fores
+    vector<vector<double>> displacedGrid((int)dimension, vector<double>((int)dimension));
     for(int i=0 ; i < (int)dimension ;i++){
       for(int j = 0  ; j < (int)dimension ; j++ ){
         displacedGrid[i][j] = Grid[i][j] + displacedFactorsForKTimes[i][j];
@@ -454,10 +439,7 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
     // printGrid("Displaced Grid", dimension, dimension, displacedGrid);
 
     //Sygkrisi me stoixeia tis kampulis
-    double ** newCurvePoints =  new double*[noofPointsInCurve];
-    for(int i = 0; i < noofPointsInCurve; i++){
-      newCurvePoints[i] = new double[(int)dimension];
-    }
+    vector<vector<double>> newCurvePoints(noofPointsInCurve, vector<double>((int)dimension));
 
     for(int i = 0; i < noofPointsInCurve ; i++){
       for(int j = 0; j < (int)dimension; j++){ // gia kathe stili - aksona
@@ -469,16 +451,12 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
     // printGrid("New Curve Grid", noofPointsInCurve, dimension, newCurvePoints);
 
     singleVecNoDublicates.clear();
-    removeDuplicates(&singleVecNoDublicates, newCurvePoints, dimension, &noofPointsInCurve);
-    Concatenation(&singleVecNoDublicates, all_K_gridCurvesVecNoDublicates);
-
-    free(newCurvePoints);
-    free(displacedGrid);
+    removeDuplicates(singleVecNoDublicates, newCurvePoints, dimension, noofPointsInCurve);
+    Concatenation(singleVecNoDublicates, all_K_gridCurvesVecNoDublicates);
 
   //cout << " K grid Curves are" << endl;
   //printVector(&all_K_gridCurvesVecNoDublicates);
   }
-  free(Grid);
 }
 
 
@@ -491,77 +469,68 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void Operation(int curve_id, double dimension, HashMap ** const HashArray, PreferedDetails * const details, vector<double>* initialCurveNoDublicatesVec, int noofPointsInCurve, double ** curvePoints, int type, vector<queryDetails> *queryOfVector, vector<vector<double>>* gridCurve, vector<string>* nameVector){
+void Operation(int curve_id, double dimension, HashMap ** const HashArray, const PreferedDetails& details, vector<double>& initialCurveNoDublicatesVec, int noofPointsInCurve, std::vector<std::vector<double>>& curvePoints, int type, vector<queryDetails>& queryOfVector, vector<vector<double>>& gridCurve, vector<string>& nameVector){
 
   static int curveID = 0;
   int hashKey;
-  Element* hashElement;
-  vector<double> all_K_gridCurvesVecNoDublicates; //vector pou periexei kai tis k-grid curves
 
-  for(int l = 0 ; l < details->numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
+  for(int l = 0 ; l < details.numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
 
-    all_K_gridCurvesVecNoDublicates.clear();
+    vector<double> all_K_gridCurvesVecNoDublicates;
     /*h sunartisi dimiourgei k- grid curves kai tis topothetei sto antistoixo vector*/
-    PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
+    PrepareForLSH( dimension, all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
 
-    if(!details -> typeOfHashChoice.compare("probabilistic")){  //exoume enan pinaka katakermatismou
-      hashElement = new Element("k", curveID, &all_K_gridCurvesVecNoDublicates);
+    if(!details.typeOfHashChoice.compare("probabilistic")){  //exoume enan pinaka katakermatismou
       vector<double> concatKVecHashFunc; //vector pou periexei tis kvec hashFunctions
       vector<double> singleHashFuncVec; //vector pou periexei 1 hashFunction kathe fora
 
       /*evresi euklideias LSH sunartisis*/
       for(int i = 0 ; i < K_VEC ; i++){
         singleHashFuncVec.clear();
-        createVecFunc(dimension, &all_K_gridCurvesVecNoDublicates, &singleHashFuncVec);
-        Concatenation(&singleHashFuncVec, &concatKVecHashFunc);
+        createVecFunc(dimension, all_K_gridCurvesVecNoDublicates, singleHashFuncVec);
+        Concatenation(singleHashFuncVec, concatKVecHashFunc);
       }
-      hashKey = FindHashValue(&concatKVecHashFunc);
+      hashKey = FindHashValue(concatKVecHashFunc);
     }
     else{
-      hashElement = new Element("k", curveID, &all_K_gridCurvesVecNoDublicates);
-      hashKey = FindHashValue(&all_K_gridCurvesVecNoDublicates);
+      hashKey = FindHashValue(all_K_gridCurvesVecNoDublicates);
     }
 
     if(type == 1){ //an einai input File
       /*Topothetisi sto hash table*/
-      HashArray[l]->put(hashKey, hashElement);
+      HashArray[l]->put(hashKey, {curveID, "k", all_K_gridCurvesVecNoDublicates});
     }
     else{ //an einai query File
 
       //initializing queryDetails
-      queryDetails* QD = new queryDetails();
-
-      HashEntry* bucketTEST;
-      int bucketIndexTEST;
-      bucketIndexTEST = HashArray[0]->FindBucket(hashKey);
-      bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
+      queryDetails QD;
 
       vector<int> IDmatchVectorTEST;
-      HashEntry* curr;
-      curr = bucketTEST;
-      while (curr)
-      {
-        if (CompareVectors(curr->getVector(), &all_K_gridCurvesVecNoDublicates))
-        {
-      	  IDmatchVectorTEST.push_back(curr->getID());
-      	  cout << "WE FOUND ONE!" << endl;
 
-      	  curr->PrintGridCurve();
+      for (auto& x : HashArray[0]->getBucket(hashKey))
+      {
+        if (x.gC == all_K_gridCurvesVecNoDublicates)
+        {
+      	  IDmatchVectorTEST.push_back(x.ID);
+      	  cout << "WE FOUND ONE!" << endl;
+          QD.foundGridCurve = true;
       	}
-      	curr = curr->next;
       }
 
       //if we find no grid matches in bucket we brute force!
-      if (QD->foundGridCurve == false)
-      {	cout << nameVector->size() << endl;
-        ExhaustiveSearch(gridCurve, nameVector, &all_K_gridCurvesVecNoDublicates, QD);
+      if (QD.foundGridCurve == false)
+      {	cout << nameVector.size() << endl;
+        ExhaustiveSearch(gridCurve, nameVector, all_K_gridCurvesVecNoDublicates, QD);
       }
       else
       {
+         for (unsigned i; i < IDmatchVectorTEST.size(); ++i)
+         {
+             cout << "KLEO NTAKS@@ : " << IDmatchVectorTEST[i] << endl;
+         }
         //TargettedSearch(..);
       }
     }
   }
-
   curveID++;
 }

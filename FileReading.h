@@ -8,28 +8,16 @@
 extern double R;
 extern double dimension;
 
-class InitialCurve{
-  public:
-
+struct InitialCurve{
 	    string curve_id;
 	    int noofPointsInCurve;
-	    double ** curvePoints;
-
-	  /*  InitialCurve(){
-
-        this -> curvePoints = new double*[this -> noofPointsInCurve];
-
-        for(int i = 0; i < this -> noofPointsInCurve; i++){
-
-            this -> curvePoints[i] = new double[(int)dimension];
-          }
-      }
-      */
+	    std::vector<std::vector<double>> curvePoints;
 };
 
-HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v, vector<string>* nameVector, vector<queryDetails> *queryOfVector);
-void EstimateCurveDetails(InitialCurve *info, string nextLineOfFile, vector<int> *curveNoOfPointsVec);
+void readingFromFile(string Filename, HashMap ** const HashArray, const PreferedDetails& details, vector<vector<double>>& v, vector<string>& nameVector, vector<queryDetails>& queryOfVector);
+void EstimateCurveDetails(InitialCurve& info, string nextLineOfFile, vector<int>& curveNoOfPointsVec);
 int DetermineTypeOfFile(ifstream* myfile);
 string readQueryFileLineByLine(ifstream *myfile);
+
 
 #endif

@@ -27,9 +27,8 @@ struct queryDetails {
 };
 
 
-class PreferedDetails{
+struct PreferedDetails{
 
-	public:
 		string inputFile;
 		string queryFile;
 		string outputFile;
