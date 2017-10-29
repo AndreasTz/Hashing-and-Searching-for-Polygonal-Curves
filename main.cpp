@@ -89,6 +89,15 @@ int main(int argc , char const *argv[]){
 			clock_t end = clock();
 
 			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+			for(int i=0 ; i< nameVector.size(); i++){
+				cout << nameVector[i] << endl;
+			}
+
+			for(int i=0 ; i< gridVector.size(); i++){
+				for(int j=0 ; j< gridVector[i].size(); j++){
+					cout << gridVector[i][j] << endl;
+				}
+			}
 			//////////////////////TESTING GROUND********************
 			count++;
 

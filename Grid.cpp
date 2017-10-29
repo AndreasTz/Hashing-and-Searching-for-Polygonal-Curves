@@ -15,24 +15,27 @@
 using namespace std;
 
 vector<int> rVector;
-void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string> nameVector, vector<double> qVector, queryDetails* QD)
+void ExhaustiveSearch(vector<vector<double>>* curveVector, vector<string>* nameVector, vector<double>* qVector, queryDetails* QD)
 {
-	double TrueDistance = FrechetDistance(&curveVector[0][0], &qVector, 1);
-  	QD->LSHDistance = TrueDistance;
-  	QD->trueDistance = TrueDistance;
-  	QD->LSHNearestNeighbor = nameVector[0][0];
-  	QD->trueNearestNeighbor = nameVector[0][0];
-  	for (int i = 0; i < curveVector[0].size(); i++)
+	double TrueDistance = FrechetDistance(&curveVector[0][0], qVector, 1);
+
+  QD->LSHDistance = TrueDistance;
+  QD->trueDistance = TrueDistance;
+  QD->LSHNearestNeighbor = nameVector[0][0];
+  QD->trueNearestNeighbor = nameVector[0][0];
+cout << " OK" << endl;
+
+  for (int i = 0; i < curveVector[0].size(); i++)
+  {
+  	if (TrueDistance > FrechetDistance(&curveVector[0][i], qVector, 1))
   	{
-    	if (TrueDistance > FrechetDistance(&curveVector[0][i], &qVector, 1))
-    	{
-	      	TrueDistance = FrechetDistance(&curveVector[0][i], &qVector, 1);
-	      	QD->LSHDistance = TrueDistance;
-	      	QD->trueDistance = TrueDistance;
-	      	QD->LSHNearestNeighbor = nameVector[0][i];
-	      	QD->trueNearestNeighbor = nameVector[0][i];
-	    }
-    }	
+	    TrueDistance = FrechetDistance(&curveVector[0][i], qVector, 1);
+	  	QD->LSHDistance = TrueDistance;
+	    QD->trueDistance = TrueDistance;
+	    QD->LSHNearestNeighbor = nameVector[0][i];
+	    QD->trueNearestNeighbor = nameVector[0][i];
+	  }
+  }
 }
 
 //INPUT 2 vector<double>
@@ -479,37 +482,6 @@ void PrepareForLSH(double dimension, vector<double> *all_K_gridCurvesVecNoDublic
 }
 
 
-/*void QOperation(double dimension, vector<double> *initialCurveNoDublicatesVec ,PreferedDetails * const details, double ** curvePoints , int noofPointsInCurve){
-  vector<double> all_K_gridCurvesVecNoDublicates;
-  int keyTEST;
-  for(int l = 0 ; l < details->numberOfHashingArrays ; l++){
-    PrepareForLSH( dimension, &all_K_gridCurvesVecNoDublicates, initialCurveNoDublicatesVec, details, curvePoints , noofPointsInCurve);
-
-    keyTEST = FindHashValue(&all_K_gridCurvesVecNoDublicates);
-    cout << "******** VRIKA TOSO KEY:: " << keyTEST << endl;
-
-    HashEntry* bucketTEST;
-    int bucketIndexTEST;
-    bucketIndexTEST = HashArray[0]->FindBucket(keyTEST);
-    bucketTEST = HashArray[0]->FirstElementOfBucket(bucketIndexTEST);
-
-    vector<int> IDmatchVectorTEST;
-    HashEntry* curr;
-    curr = bucketTEST;
-    while (curr)
-    {
-      if (CompareVectors(curr->getVector(), &all_K_gridCurvesVecNoDublicates))
-      {
-        IDmatchVectorTEST.push_back(curr->getID());
-        cout << "WE FOUND ONE!" << endl;
-        curr->PrintGridCurve();
-      }
-      curr = curr->next;
-    }
-  }
-}*/
-
-
 /*
 Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto Hash Table.
   input:  dimension (diastasi kampilis)
@@ -573,7 +545,7 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
         {
       	  IDmatchVectorTEST.push_back(curr->getID());
       	  cout << "WE FOUND ONE!" << endl;
-          QD->foundGridCurve = true;
+
       	  curr->PrintGridCurve();
       	}
       	curr = curr->next;
@@ -581,8 +553,8 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, Prefe
 
       //if we find no grid matches in bucket we brute force!
       if (QD->foundGridCurve == false)
-      {
-        //ExhaustiveSearch(gridCurve, nameVector, &all_K_gridCurvesVecNoDublicates, QD);
+      {	cout << nameVector->size() << endl;
+        ExhaustiveSearch(gridCurve, nameVector, &all_K_gridCurvesVecNoDublicates, QD);
       }
       else
       {

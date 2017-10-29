@@ -42,14 +42,16 @@ HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedD
 
 			EstimateCurveDetails(info, nextLineOfFile, &curveNoOfPointsVec);
 
-      int curveid = atoi(info -> curve_id.c_str());
+			int curveid = atoi(info -> curve_id.c_str());
       initialCurveNoDublicatesVec.clear();
 			createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
-
+nameVector->push_back(info->curve_id);
       if(type == 1){ // is Input File
+
 			  Operation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints , 1, queryOfVector, v, nameVector);
       }
       else{
+
 				queryOfVector->push_back(queryDetails());
 				queryOfVector[0][count].queryID = info->curve_id;
 
