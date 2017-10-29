@@ -2,10 +2,13 @@
 #include <string>
 #include <stdlib.h>
 #include <fstream>
+#include <ctime>
 
 #include "FileReading.h"
 #include "Hashing.h"
 #include "HelpClasses.h"
+
+#include "Grid.h"
 
 #define DEFAULT_K 2
 #define DEFAULT_L 3
@@ -21,20 +24,20 @@
 using namespace std;
 
 
-void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails * details);
-void menu(PreferedDetails *details);
-void showPreferences(PreferedDetails *details);
+void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails& details);
+void menu(PreferedDetails& details);
+void showPreferences(PreferedDetails& details);
 string checkForContinue();
+
 
 
 int main(int argc , char const *argv[]){
 
 	string answer = "yes";
 	int times = 0;
-	while(!answer.compare("yes")){
+	while(answer == "yes"){
 
-		PreferedDetails * details;
-		details = new PreferedDetails;
+		PreferedDetails details;
 
 		if(argc == 1 || times > 1) {
 
@@ -49,12 +52,13 @@ int main(int argc , char const *argv[]){
 
 		showPreferences(details);
 		int count = 200;
-		if(details->optionalStatsIsHere){
+		if(details.optionalStatsIsHere){
 			count = 0 ;
 		}
 		do{
 
     	vector<vector<double>> gridVector;
+			vector<string> nameVector;
 
       /*********************************************************
       //for each curve we do
@@ -64,28 +68,43 @@ int main(int argc , char const *argv[]){
       *********************************************************/
 
 			HashMap ** HashArray;
-			if(!details -> typeOfHashChoice.compare("classic")){
 
-				details->numberOfHashingArrays = 1;
+			HashArray = new HashMap* [details.numberOfHashingArrays];
 
-			}
-			HashArray = new HashMap* [details->numberOfHashingArrays];
-
-			for(int i = 0; i < details->numberOfHashingArrays ; i++){
+			for(int i = 0; i < details.numberOfHashingArrays ; i++){
 				HashArray[i] = new HashMap();
 			}
 
-    	HashEntry* bucket;
+			vector<queryDetails> queryOfVector;
 
-			bucket = readingFromFile(details->inputFile , HashArray, details, &gridVector);
-	//		HashEntry* bucket2;
-	//		bucket2 = readingFromFile(details->queryFile , HashArray, details, &gridVector);
+            readingFromFile(details.inputFile , HashArray, details, gridVector, nameVector, queryOfVector);
+
+
+			//clock_t begin = clock();
+			readingFromFile(details.queryFile , HashArray, details, gridVector, nameVector, queryOfVector);
+			cout << "------------------------------------" << queryOfVector[0].queryID << endl;
+			//clock_t end = clock();
+
+			//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+			for(auto& x : nameVector){
+				cout << x << endl;
+			}
+
+			for(auto& x : gridVector){
+				for(auto& y : x){
+					cout << y << endl;
+				}
+			}
+			//////////////////////TESTING GROUND********************
 			count++;
 
-			//Free HashMap
-			//Metrisi xronou gia query
+			for(int i = 0; i < details.numberOfHashingArrays ; i++){
+					delete HashArray[i];
+			}
+
 		}while(count < 100);
 		times++;
+
 		answer = checkForContinue();
 	}
 		return 0;
@@ -110,83 +129,83 @@ string checkForContinue(){
 }
 
 
-void showPreferences(PreferedDetails *details){
+void showPreferences(PreferedDetails& details){
 
 	cout << "Your prefereces are: " << endl;
-	cout << "Input File: " << details->inputFile << endl;
-	cout << "Output File: " << details->outputFile << endl;
-	cout << "Query File: " << details->queryFile << endl;
-	cout << "number of Locality Sensitive Functions: " << details->numberOfLocalitySensitiveFunctions << endl;
-	cout << "numberOfHashingArrays: " << details->numberOfHashingArrays << endl;
-	cout << "optional Stats Is Here: " << details->optionalStatsIsHere << endl;
-	cout << "type of Function Choice: " << details->typeOfFunctionChoice << endl;
-	cout << "type of Hash Choice: " << details->typeOfHashChoice << endl;
+	cout << "Input File: " << details.inputFile << endl;
+	cout << "Output File: " << details.outputFile << endl;
+	cout << "Query File: " << details.queryFile << endl;
+	cout << "number of Locality Sensitive Functions: " << details.numberOfLocalitySensitiveFunctions << endl;
+	cout << "numberOfHashingArrays: " << details.numberOfHashingArrays << endl;
+	cout << "optional Stats Is Here: " << details.optionalStatsIsHere << endl;
+	cout << "type of Function Choice: " << details.typeOfFunctionChoice << endl;
+	cout << "type of Hash Choice: " << details.typeOfHashChoice << endl;
 
 }
 
 
 
-void menu(PreferedDetails *details){
+void menu(PreferedDetails& details){
 
-	details->optionalStatsIsHere = 0;
+	details.optionalStatsIsHere = 0;
 
 	cout << " Welcome to our menu " << endl;
 	cout << " Please enter the path of INPUT FILE " << endl;
- 	getline(cin, details->inputFile);
+ 	cin >> details.inputFile;
 
 	string numberofLocalitySensitiveFunctionsStr;
 
 	cout << " Please enter the number of Locality Sensitive Functions: (If you press enter the default values will be inserted) " << endl;
-	getline(cin, numberofLocalitySensitiveFunctionsStr) ;
+	cin >> numberofLocalitySensitiveFunctionsStr;
 
 	if ( numberofLocalitySensitiveFunctionsStr == ""){
 
-		details->numberOfLocalitySensitiveFunctions = DEFAULT_K;
+		details.numberOfLocalitySensitiveFunctions = DEFAULT_K;
 
 	}
 	else{
 
-		details->numberOfLocalitySensitiveFunctions = atoi(numberofLocalitySensitiveFunctionsStr.c_str());
+		details.numberOfLocalitySensitiveFunctions = atoi(numberofLocalitySensitiveFunctionsStr.c_str());
 
 	}
 
 	cout << " Please enter the number of Hashing Arrays: (If you press enter the default values will be inserted) " << endl;
 
 	string numberOfHashingArraysStr;
-	getline(cin, numberOfHashingArraysStr) ;
+	cin >> numberOfHashingArraysStr;
 
 	if ( numberOfHashingArraysStr == ""){
 
-		details->numberOfHashingArrays = DEFAULT_L;
+		details.numberOfHashingArrays = DEFAULT_L;
 
 	}
 	else{
 
-		details->numberOfHashingArrays = atoi(numberOfHashingArraysStr.c_str());
+		details.numberOfHashingArrays = atoi(numberOfHashingArraysStr.c_str());
 
 	}
 
 	cout << " Please enter the type of Function (DFT or DTW) " << endl;
-	getline(cin, details->typeOfFunctionChoice);
-	while( details->typeOfFunctionChoice.compare("DFT") && details->typeOfFunctionChoice.compare("DTW") ) {
+	cin >> details.typeOfFunctionChoice;
+	while( details.typeOfFunctionChoice.compare("DFT") && details.typeOfFunctionChoice.compare("DTW") ) {
 		cout << " Please \" DFT \" or \" DTW \" " << endl;
-		getline(cin, details->typeOfFunctionChoice);
+		getline(cin, details.typeOfFunctionChoice);
 	}
 
 	cout << " Please enter the type of Hash (classic or probabilistic) " << endl;
-	getline(cin, details->typeOfHashChoice);
-	while( details->typeOfHashChoice.compare("classic") && details->typeOfHashChoice.compare("probabilistic") ) {
+	cin >> details.typeOfHashChoice;
+	while( details.typeOfHashChoice.compare("classic") && details.typeOfHashChoice.compare("probabilistic") ) {
 		cout << " Please \" classic \" or \" probabilistic \" " << endl;
-		getline(cin, details->typeOfHashChoice);
+		getline(cin, details.typeOfHashChoice);
 	}
 
 	while(1) {
 		cout << " Do you want stats? (yes/no)" << endl;
 		string answer;
-		getline(cin, answer);
+		cin >> answer;
 		if(!answer.compare("yes")){
 
-			details->optionalStatsIsHere = 1;
+			details.optionalStatsIsHere = 1;
 			break;
 
 		}
@@ -200,10 +219,10 @@ void menu(PreferedDetails *details){
 
 
 	cout << " Please enter the path of OUTPUT FILE " << endl;
-	getline(cin, details->outputFile);
+	cin >> details.outputFile;
 
 	cout << " Please enter the path of QUERY FILE " << endl;
-	getline(cin, details->queryFile);
+	cin >> details.queryFile;
 }
 
 
@@ -211,7 +230,7 @@ void menu(PreferedDetails *details){
 	CMD::::!!!!!!!!!!!!!!! Yparxei dinatotita na dineis -stats <otidipote> kai apla -stats <keno>
 	Menu:::: !!!!!!!!!!!!!! yparxei sinthiki elegxou gia na dinetai yes/no
 */
-void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails * details) {
+void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails& details) {
 
 	string arg;
 
@@ -221,58 +240,58 @@ void readingFromCMD(int howManyArgs, char const *argv[] , PreferedDetails * deta
 
 		if(!arg.compare(minus_d)){
 
-			details -> inputFile = argv[i+1];
+			details.inputFile = argv[i+1];
 
 		}
 		else if(!arg.compare(minus_q)){
 
-			details -> queryFile = argv[i+1];
+			details.queryFile = argv[i+1];
 			//cout << "Query File: " << details->queryFile << endl;
 		}
 		else if(!arg.compare(minus_o)){
 
-			details -> outputFile = argv[i+1];
+			details.outputFile = argv[i+1];
 		//	cout << "Output File: " << details->outputFile << endl;
 		}
 		else if(!arg.compare(minus_k)){
 
 			arg = argv[i+1];
-			details -> numberOfLocalitySensitiveFunctions = atoi(arg.c_str());
+			details.numberOfLocalitySensitiveFunctions = atoi(arg.c_str());
 		//	cout << "number of Locality Sensitive Functions: " << details->numberOfLocalitySensitiveFunctions << endl;
 		}
 		else if(!arg.compare(minus_L)){
 
 			arg = argv[i+1];
-			details -> numberOfHashingArrays = atoi(arg.c_str());
+			details.numberOfHashingArrays = atoi(arg.c_str());
 		//	cout << "numberOfHashingArrays: " << details->numberOfHashingArrays << endl;
 		}
 		else if(!arg.compare(minus_Stats)){
 
-			details -> optionalStatsIsHere = 1;
+			details.optionalStatsIsHere = 1;
 
 			arg = argv[i+1];
 
 			if(arg == ""){
 
 				i=i-1;
-				details -> optionOfStat = "";
+				details.optionOfStat = "";
 
 			}
 			else{
 
-				details -> optionOfStat = argv[i+1];
+				details.optionOfStat = argv[i+1];
 
 			}
 
 		}
 		else if(!arg.compare(minus_Function)){
 
-			details -> typeOfFunctionChoice = argv[i+1];
+			details.typeOfFunctionChoice = argv[i+1];
 
 		}
 		else if(!arg.compare(minus_Hash)){
 
-			details -> typeOfHashChoice = argv[i+1];
+			details.typeOfHashChoice = argv[i+1];
 
 		}
 

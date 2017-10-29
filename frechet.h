@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <cmath>
-#include <vector
+#include <vector>
 
 using namespace std;
 
-double PointDistance(vector<double>* v1, vector<double>* v2, int point1, int point2, int d);
+double PointDistance(const vector<double>& v1, const vector<double>& v2, int point1, int point2, int d);
 
-double FrechetDistance(vector<double>* v1, vector<double>* v2, int d);
+double FrechetDistance(const vector<double>& v1, const vector<double>& v2, int d);
 
 #endif

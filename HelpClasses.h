@@ -6,11 +6,29 @@
 #define DEFAULT_L 3
 
 #include <string>
+#include <vector>
 using namespace std;
 
-class PreferedDetails{
+struct queryDetails {
+		string queryID;
+		bool foundGridCurve;
+		int LSHDistance;
+		int trueDistance;
 
-	public:
+		string trueNearestNeighbor;
+		string LSHNearestNeighbor;
+
+		vector<string> NNcurves;
+
+		queryDetails()
+		{
+			this->foundGridCurve = false;
+		}
+};
+
+
+struct PreferedDetails{
+
 		string inputFile;
 		string queryFile;
 		string outputFile;

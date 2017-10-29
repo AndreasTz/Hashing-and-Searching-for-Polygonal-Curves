@@ -10,93 +10,29 @@ using namespace std;
 
 double R, dimension;
 
-
-/*
-Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mia kampili
-	input: Filename (onoma arxeiou)
-				 HashArray (Pinakas me deiktes se HashTables)
-				 details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
-	output: -
-
-*/
-HashEntry* readingFromFile(string Filename, HashMap ** const HashArray,PreferedDetails * const details, vector<vector<double>>* v){
-
-		ifstream myfile;
-		myfile.open(Filename.c_str());
-		if(myfile == NULL){
-			cerr << " Problem in openning the file you've asked " << endl;
-			exit(-2);
-		}
-
-		InitialCurve *info = new InitialCurve();
-
-		int type = DetermineTypeOfFile(&myfile);
-
-		if(type == 1){ // is Input File
-			vector<int> curveNoOfPointsVec;
-
-  		string nextLineOfFile ;
-  		getline(myfile, nextLineOfFile);
-			cout << nextLineOfFile << endl;
-			while(!myfile.eof() && nextLineOfFile.compare("\n")){
-
-				EstimateCurveDetails(info, nextLineOfFile, &curveNoOfPointsVec);
-
-				int curveid = atoi(info -> curve_id.c_str());
-				vector<double> initialCurveNoDublicatesVec;
-
-				createInitialCurveNoDublicates(dimension, info->curvePoints, info->noofPointsInCurve, v, &initialCurveNoDublicatesVec);
-			
-				InputOperation(curveid, dimension, HashArray, details, &initialCurveNoDublicatesVec, info->noofPointsInCurve , info->curvePoints  );
-
-				getline(myfile, nextLineOfFile);
-
-				delete(info->curvePoints);
-			}
-
-		}
-		else { // is Query File
-			string nextLineOfFile;
-		//	while(!myfile.eof() && nextLineOfFile.compare("\n")){
-				nextLineOfFile =readQueryFileLineByLine(&myfile);
-		//		cout << nextLineOfFile << endl;
-		//	}
-		//	QueryOperation(&myfile, curveid, dimension, R, info->curvePoints , info->noofPointsInCurve , HashArray, details, v);
-		}
-
-		return nullptr;
-}
-
-
 /*
 Sunartisi i opoia upologizei ta vasika stixeia tis kampilis sumfwna me to dothen input arxeio gia mia sygkekrimeni grammi
 */
-void EstimateCurveDetails(InitialCurve *info, string nextLineOfFile, vector<int> *curveNoOfPointsVec){
+void EstimateCurveDetails(InitialCurve& info, string nextLineOfFile, vector<int>& curveNoOfPointsVec){
 
-	info -> curve_id = strtok ( const_cast<char*> (nextLineOfFile.c_str()),"\t, ");
+	info.curve_id = strtok ( const_cast<char*> (nextLineOfFile.c_str()),"\t, ");
 	string noofPointsInCurveStr =  strtok( 0 , "\t, ");
-	info -> noofPointsInCurve = atoi(noofPointsInCurveStr.c_str());
-	curveNoOfPointsVec->push_back(info -> noofPointsInCurve);
+	info.noofPointsInCurve = atoi(noofPointsInCurveStr.c_str());
+	curveNoOfPointsVec.push_back(info.noofPointsInCurve);
 	string pointStr;
 
-	info -> curvePoints = new double*[info -> noofPointsInCurve];
-	for(int i = 0; i < info -> noofPointsInCurve; i++){
+    info.curvePoints = std::vector<std::vector<double>>(info.noofPointsInCurve, std::vector<double>((int)dimension));
 
-			info -> curvePoints[i] = new double[(int)dimension];
-		}
-
-
-	for(int i = 0; i < info -> noofPointsInCurve ; i++){
+	for(int i = 0; i < info.noofPointsInCurve ; i++){
 		for(int j = 0 ; j < (int)dimension ; j++){
 
 			pointStr = strtok (  0 ,"()\t, ");
-			info -> curvePoints[i][j] = atof(pointStr.c_str());
+			info.curvePoints[i][j] = stof(pointStr);
 			// cout << info -> curvePoints[i][j] << " " << endl;
 
 		}
 	}
 }
-
 
 /*Sunartisi i opoia upologizei to eidos toy arxeiou
 Returns 1: an einai input arxeio
@@ -135,6 +71,59 @@ int DetermineTypeOfFile(ifstream* myfile){
 
 		return 2;
 	}
+    throw;
+}
+
+
+/*
+Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mia kampili
+	input: Filename (onoma arxeiou)
+				 HashArray (Pinakas me deiktes se HashTables)
+				 details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
+	output: -
+
+*/
+void readingFromFile(string Filename, HashMap ** const HashArray, const PreferedDetails& details, vector<vector<double>>& v, vector<string>& nameVector, vector<queryDetails>& queryOfVector){
+
+    ifstream myfile;
+    myfile.open(Filename);
+    if(!myfile.good()){
+        cerr << " Problem in openning the file you've asked " << endl;
+        exit(-2);
+    }
+
+    InitialCurve info;
+    int type = DetermineTypeOfFile(&myfile);
+
+    vector<int> curveNoOfPointsVec;
+
+    string nextLineOfFile ;
+    getline(myfile, nextLineOfFile);
+
+    vector<double> initialCurveNoDublicatesVec;
+    int count = 0;
+    while(!myfile.eof() && nextLineOfFile.compare("\n")){
+
+        EstimateCurveDetails(info, nextLineOfFile, curveNoOfPointsVec);
+
+        int curveid = atoi(info.curve_id.c_str());
+        initialCurveNoDublicatesVec.clear();
+        createInitialCurveNoDublicates(dimension, info.curvePoints, info.noofPointsInCurve, v, initialCurveNoDublicatesVec);
+        nameVector.push_back(info.curve_id);
+        if(type == 1){ // is Input File
+
+            Operation(curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 1, queryOfVector, v, nameVector);
+        }
+        else{
+
+            queryOfVector.push_back(queryDetails());
+            queryOfVector[count].queryID = info.curve_id;
+
+            Operation(curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 2, queryOfVector, v, nameVector);
+        }
+        getline(myfile, nextLineOfFile);
+        count++;
+    }
 }
 
 
@@ -145,11 +134,11 @@ string readQueryFileLineByLine(ifstream *myfile){
 	if(!myfile->eof() && Line.compare("\n")){
 
 		vector<int> curveNoOfPointsVec;
-		InitialCurve *info = new InitialCurve;
+		InitialCurve info;
 
-		EstimateCurveDetails(info, Line, &curveNoOfPointsVec);
+		EstimateCurveDetails(info, Line, curveNoOfPointsVec);
 
 		return Line;
-
 	}
+    throw;
 }
