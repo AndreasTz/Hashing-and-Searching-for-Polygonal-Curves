@@ -3,10 +3,12 @@
 
 #include "Hashing.h"
 #include "HelpClasses.h"
-#include <string>
+#include <cstring>
 
 extern double R;
 extern double dimension;
+
+extern vector<stats> statsVec;
 
 struct InitialCurve{
 	    string curve_id;

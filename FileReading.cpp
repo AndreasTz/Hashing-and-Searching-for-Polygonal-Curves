@@ -1,17 +1,16 @@
 #include <iostream>
-#include <string.h>
 #include <fstream>
 
 #include "Grid.h"
 #include "FileReading.h"
-#include "HelpClasses.h"
 
 using namespace std;
 
 double R, dimension;
 
 /*
-Sunartisi i opoia upologizei ta vasika stixeia tis kampilis sumfwna me to dothen input arxeio gia mia sygkekrimeni grammi
+Sunartisi i opoia upologizei ta vasika stixeia tis kampilis
+sumfwna me to dothen input arxeio gia mia sygkekrimeni grammi
 */
 void EstimateCurveDetails(InitialCurve& info, string nextLineOfFile, vector<int>& curveNoOfPointsVec){
 
@@ -21,14 +20,13 @@ void EstimateCurveDetails(InitialCurve& info, string nextLineOfFile, vector<int>
 	curveNoOfPointsVec.push_back(info.noofPointsInCurve);
 	string pointStr;
 
-    info.curvePoints = std::vector<std::vector<double>>(info.noofPointsInCurve, std::vector<double>((int)dimension));
+  info.curvePoints = std::vector<std::vector<double>>(info.noofPointsInCurve, std::vector<double>((int)dimension));
 
 	for(int i = 0; i < info.noofPointsInCurve ; i++){
 		for(int j = 0 ; j < (int)dimension ; j++){
 
 			pointStr = strtok (  0 ,"()\t, ");
 			info.curvePoints[i][j] = stof(pointStr);
-			// cout << info -> curvePoints[i][j] << " " << endl;
 
 		}
 	}
@@ -36,13 +34,14 @@ void EstimateCurveDetails(InitialCurve& info, string nextLineOfFile, vector<int>
 
 /*Sunartisi i opoia upologizei to eidos toy arxeiou
 Returns 1: an einai input arxeio
-Returns 2: an einai query arxeios*/
+Returns 2: an einai query arxeio*/
 int DetermineTypeOfFile(ifstream* myfile){
 
 	string firstLineOfFile ;
 	getline(*myfile, firstLineOfFile);
-
+	cout << firstLineOfFile << endl;
 	string typeofFileStr = firstLineOfFile.substr (0,2);
+	cout << typeofFileStr << endl;
 	string defaultForInputFile = "@d";
 	string defaultForQueryFile = "R:";
 
@@ -80,8 +79,8 @@ Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mi
 	input: Filename (onoma arxeiou)
 				 HashArray (Pinakas me deiktes se HashTables)
 				 details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
+				 kai voithitikoi vectors oi opoioi exoun dimiourgithei gia na epistrefoun sti main ta stoixeia twn kampilwn pou diavastikan
 	output: -
-
 */
 void readingFromFile(string Filename, HashMap ** const HashArray, const PreferedDetails& details, vector<vector<double>>& v, vector<string>& nameVector, vector<queryDetails>& queryOfVector){
 
@@ -91,6 +90,9 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
         cerr << " Problem in openning the file you've asked " << endl;
         exit(-2);
     }
+
+		myfile.clear();
+		myfile.seekg(0, ios::beg);
 
     InitialCurve info;
     int type = DetermineTypeOfFile(&myfile);
@@ -102,6 +104,13 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
 
     vector<double> initialCurveNoDublicatesVec;
     int count = 0;
+		static int searchingTimes = 0 ;
+		clock_t begin;
+		clock_t end;
+		if(type == 2 ){
+			begin = clock();
+		}
+
     while(!myfile.eof() && nextLineOfFile.compare("\n")){
 
         EstimateCurveDetails(info, nextLineOfFile, curveNoOfPointsVec);
@@ -120,10 +129,22 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
             queryOfVector[count].queryID = info.curve_id;
 
             Operation(curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 2, queryOfVector, v, nameVector);
-        }
+
+		    }
         getline(myfile, nextLineOfFile);
         count++;
     }
+		if(type == 2 ) {
+			end = clock();
+			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+			statsVec[searchingTimes].LSHTime.push_back(elapsed_secs);
+
+			searchingTimes++;
+		}
+		queryOfVector.clear();
+		initialCurveNoDublicatesVec.clear();
+		curveNoOfPointsVec.clear();
 }
 
 

@@ -24,11 +24,27 @@ struct queryDetails {
 		{
 			this->foundGridCurve = false;
 		}
+
+		void setTrueNN(string NN){
+			this->trueNearestNeighbor = NN;
+		}
+
+		void setLSHNN(string NN){
+			this->LSHNearestNeighbor = NN;
+		}
 };
 
+struct stats{
+	double LSHDist ;
+	vector<double> LSHTime;
+	double tTime;
 
-struct PreferedDetails{
+	double distanceTrue;
+};
 
+class PreferedDetails{
+
+	public:
 		string inputFile;
 		string queryFile;
 		string outputFile;

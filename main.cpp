@@ -9,6 +9,7 @@
 #include "HelpClasses.h"
 
 #include "Grid.h"
+#include "outputFunctions.h"
 
 #define DEFAULT_K 2
 #define DEFAULT_L 3
@@ -29,7 +30,8 @@ void menu(PreferedDetails& details);
 void showPreferences(PreferedDetails& details);
 string checkForContinue();
 
-
+vector<stats> statsVec;
+vector<double> LSHTime;
 
 int main(int argc , char const *argv[]){
 
@@ -38,7 +40,7 @@ int main(int argc , char const *argv[]){
 	while(answer == "yes"){
 
 		PreferedDetails details;
-
+		cout << "times: " << times << endl;
 		if(argc == 1 || times > 1) {
 
 				menu(details);
@@ -55,6 +57,7 @@ int main(int argc , char const *argv[]){
 		if(details.optionalStatsIsHere){
 			count = 0 ;
 		}
+		vector<queryDetails> queryOfVector;
 		do{
 
     	vector<vector<double>> gridVector;
@@ -75,26 +78,23 @@ int main(int argc , char const *argv[]){
 				HashArray[i] = new HashMap();
 			}
 
-			vector<queryDetails> queryOfVector;
-
-            readingFromFile(details.inputFile , HashArray, details, gridVector, nameVector, queryOfVector);
-
-
-			//clock_t begin = clock();
+      readingFromFile(details.inputFile , HashArray, details, gridVector, nameVector, queryOfVector);
+			statsVec.push_back(stats());
 			readingFromFile(details.queryFile , HashArray, details, gridVector, nameVector, queryOfVector);
-			cout << "------------------------------------" << queryOfVector[0].queryID << endl;
-			//clock_t end = clock();
 
-			//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+	/*		cout << "The names of curves are: " << endl;
 			for(auto& x : nameVector){
-				cout << x << endl;
+				cout << x << " , ";
 			}
-
+			cout << endl;
+			cout << "The ids are: "
 			for(auto& x : gridVector){
 				for(auto& y : x){
 					cout << y << endl;
 				}
 			}
+	*/
 			//////////////////////TESTING GROUND********************
 			count++;
 
@@ -104,6 +104,8 @@ int main(int argc , char const *argv[]){
 
 		}while(count < 100);
 		times++;
+
+		writingToOutputFile(details.outputFile, queryOfVector, statsVec, details);
 
 		answer = checkForContinue();
 	}

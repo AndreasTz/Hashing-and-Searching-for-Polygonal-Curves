@@ -5,7 +5,15 @@
 #include "HelpClasses.h"
 #include <vector>
 
-void ExhaustiveSearch(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& qVector, queryDetails& QD);
+extern vector<double> LSHTime;
+
+void ExhaustiveSearch(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& qVector, queryDetails& QD, int d);
+
+void TargettedSearch(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& all_K_gridCurvesVecNoDublicates, queryDetails& QD, vector<int>& IDmatchVector, int d);
+
+void ExhaustiveSearchDTW(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& qVector, queryDetails& QD, int d);
+
+void TargettedSearchDTW(vector<vector<double>>& curveVector, vector<string>& nameVector, vector<double>& all_K_gridCurvesVecNoDublicates, queryDetails& QD, vector<int>& IDmatchVector, int d);
 
 bool CompareVectors(const vector<double>& v1, const vector<double>& v2);
 
@@ -36,13 +44,13 @@ void Concatenation(vector<double>& singleVec, vector<double>& resultVec);
 
 void selectT_Vector(vector<double>& t, double lenOfVec);
 
-void createVecFunc(double dimension, vector<double>& all_K_gridCurvesVecNoDublicates, vector<double>& singleHashFuncVec);
+void createVecFunc(vector<double>& all_K_gridCurvesVecNoDublicates, vector<double>& singleHashFuncVec);
 
 void createInitialCurveNoDublicates(int dimension, vector<vector<double>>& curvePoints, int noofPointsInCurve, vector<vector<double>>& v, vector<double>& initialCurveNoDublicatesVec);
 
-void findPoint(double dimension, vector<double>& resultVec, vector<double>& all_K_gridCurvesVecNoDublicatesCP);
+//void findPoint(int dimension, vector<double>& resultVec, vector<double>& all_K_gridCurvesVecNoDublicatesCP);
 
-double findMinA(int dimension, int row ,int col, const vector<vector <double> > displacedFactor, const vector<double>& initialCurveNoDublicatesVec);
+double findMinA(int dimension, int row ,int col, vector<vector <double> >& displacedFactor, const vector<double>& initialCurveNoDublicatesVec);
 
 void fillGrid(int dimension, int noofPointsInCurve, int numberOfLocalitySensitiveFunctions, vector< vector<double> >& vectorOfVectors ,vector<double>& initialCurveNoDublicatesVec, vector<vector<double>>& Grid);
 
