@@ -56,7 +56,7 @@ public:
 
       void put(int key, Element elem)
       {
-          std::cout << elem.ID << '\n';
+          /*std::cout << elem.ID << '\n';
           if (elem.gC.empty())
           {
               std::cout << "[]" << '\n';
@@ -69,7 +69,7 @@ public:
                   std::cout << x << ", ";
               }
               std::cout << "\b\b]" << '\n';
-          }
+          }*/
           mTable[getHash(key)].emplace_back(std::move(elem));
       }
 
