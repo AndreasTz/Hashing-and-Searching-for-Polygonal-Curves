@@ -7,5 +7,5 @@
 
 
 void OrderNNResult(vector<string>& vec);
-void writingToOutputFile(string Filename, vector<queryDetails>& queryOfVec, vector<stats>& vecOfStats ,PreferedDetails &details);
+void writingToOutputFile(string Filename, vector<queryDetails>& queryOfVec, vector<stats> vecOfStats ,PreferedDetails &details);
 #endif

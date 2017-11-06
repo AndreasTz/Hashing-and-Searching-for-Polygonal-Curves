@@ -12,8 +12,9 @@ using namespace std;
 struct queryDetails {
 		string queryID;
 		bool foundGridCurve;
-		int LSHDistance;
-		int trueDistance;
+		double LSHDistance;
+		double trueDistance;
+		float tTime;
 
 		string trueNearestNeighbor;
 		string LSHNearestNeighbor;
@@ -35,11 +36,10 @@ struct queryDetails {
 };
 
 struct stats{
-	double LSHDist ;
+	vector<double> LSHDistance;
 	vector<double> LSHTime;
 	double tTime;
 
-	double distanceTrue;
 };
 
 class PreferedDetails{

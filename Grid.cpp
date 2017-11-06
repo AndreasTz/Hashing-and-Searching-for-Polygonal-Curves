@@ -573,15 +573,23 @@ Synartisi i opoia ektelei ti vasiki leitourgia  gia to LSH kai tin eisagwgi sto 
           details (stoixeia voithitikis klasis gia ta arxika stoixeia pou prostithentai)
   output: -
 */
-void Operation(int curve_id, double dimension, HashMap ** const HashArray, const PreferedDetails& details,
+void Operation(int flag, int curve_id, double dimension, HashMap ** const HashArray, const PreferedDetails& details,
               vector<double>& initialCurveNoDublicatesVec, int noofPointsInCurve, std::vector<std::vector<double>>& curvePoints,
               int type, vector<queryDetails>& queryOfVector, vector<vector<double>>& gridCurve, vector<string>& nameVector){
 
-  static int curveID = 0;
+  static int curveID ;
+  static int queryCount =0 ;
+  if(flag == 0){
+    curveID = 0;
+  //  queryOfVector.clear();
+    queryCount = 0;
+  }
+
   int hashKey;
   string choice = details.typeOfFunctionChoice;
 
   vector<double> all_K_gridCurvesVecNoDublicates;
+
   for(int l = 0 ; l < details.numberOfHashingArrays ; l++){ //LSH : ekteleitai to loop L-fores
 
     all_K_gridCurvesVecNoDublicates.clear();
@@ -607,12 +615,14 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, const
 
     if(type == 1){ //an einai input File
       /*Topothetisi sto hash table*/
+
       HashArray[l]->put(hashKey, {curveID, nameVector[curveID], all_K_gridCurvesVecNoDublicates});
+
     }
     else{ //an einai query File
 
       //initializing queryDetails
-      static int queryCount = 0;
+
       queryDetails QD;
 
       vector<int> IDmatchVector;
@@ -625,28 +635,43 @@ void Operation(int curve_id, double dimension, HashMap ** const HashArray, const
           QD.foundGridCurve = true;
       	}
       }
-
+      clock_t begin , end;
+        double elapsed_secs;
       //if we find no grid matches in bucket we brute force!
       if (QD.foundGridCurve == false)
       {
+        if(details.optionalStatsIsHere)
+          begin = clock();
         if (!choice.compare("DTW")) ExhaustiveSearchDTW(gridCurve, nameVector, all_K_gridCurvesVecNoDublicates, QD, (int)dimension);
         else ExhaustiveSearch(gridCurve, nameVector, all_K_gridCurvesVecNoDublicates, QD, dimension);
+
+        if(details.optionalStatsIsHere){
+          end = clock();
+          elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+        }
+        queryOfVector[queryCount].tTime = elapsed_secs;
       }
       else
       {
          if (!choice.compare("DTW")) TargettedSearchDTW(gridCurve, nameVector, all_K_gridCurvesVecNoDublicates, QD, IDmatchVector, dimension);
          else TargettedSearch(gridCurve, nameVector, all_K_gridCurvesVecNoDublicates, QD, IDmatchVector, dimension);
       }
-
-      queryOfVector[queryCount].trueDistance = QD.trueDistance;
-      queryOfVector[queryCount].LSHDistance =  QD.LSHDistance;
-      queryOfVector[queryCount].setTrueNN(QD.trueNearestNeighbor);
-      queryOfVector[queryCount].setLSHNN(QD.LSHNearestNeighbor);
-      if(QD.NNcurves.size()){
-        queryOfVector[queryCount].NNcurves = QD.NNcurves;
+      if(!details.optionalStatsIsHere){
+        queryOfVector[queryCount].trueDistance = QD.trueDistance;
+        queryOfVector[queryCount].LSHDistance =  QD.LSHDistance;
+        queryOfVector[queryCount].setTrueNN(QD.trueNearestNeighbor);
+        queryOfVector[queryCount].setLSHNN(QD.LSHNearestNeighbor);
+        cout << QD.NNcurves.size() << endl;
+        if(QD.NNcurves.size()){
+          queryOfVector[queryCount].NNcurves = QD.NNcurves;
+        }
+        queryCount++;
       }
-      queryCount++;
+      else{
+        queryOfVector[queryCount].trueDistance = QD.trueDistance;
 
+        queryCount++;
+      }
     }
   }
 

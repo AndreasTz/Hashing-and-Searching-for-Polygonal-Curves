@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "Grid.h"
+#include "outputFunctions.h"
 #include "FileReading.h"
 
 using namespace std;
@@ -47,7 +48,7 @@ int DetermineTypeOfFile(ifstream* myfile){
 
 	if(!typeofFileStr.compare(defaultForInputFile)){
 		cout << "Input File" << endl;
-		R = 1;
+		R = 1.0;
 		if(firstLineOfFile.length() == 10){ // den exei allo orisma einai mono @dimension
 
 			dimension = 2.0;
@@ -82,7 +83,9 @@ Synartisi i opoia diavazei to input arxeio kai ektelei ton algorithmo gia mia mi
 				 kai voithitikoi vectors oi opoioi exoun dimiourgithei gia na epistrefoun sti main ta stoixeia twn kampilwn pou diavastikan
 	output: -
 */
-void readingFromFile(string Filename, HashMap ** const HashArray, const PreferedDetails& details, vector<vector<double>>& v, vector<string>& nameVector, vector<queryDetails>& queryOfVector){
+void readingFromFile(int flagBasicFuncCall, string Filename, HashMap ** const HashArray,
+	PreferedDetails& details, vector<vector<double>>& v, vector<string>& nameVector,
+	vector<queryDetails>& queryOfVector){
 
     ifstream myfile;
     myfile.open(Filename);
@@ -90,9 +93,6 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
         cerr << " Problem in openning the file you've asked " << endl;
         exit(-2);
     }
-
-		myfile.clear();
-		myfile.seekg(0, ios::beg);
 
     InitialCurve info;
     int type = DetermineTypeOfFile(&myfile);
@@ -103,13 +103,14 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
     getline(myfile, nextLineOfFile);
 
     vector<double> initialCurveNoDublicatesVec;
+
     int count = 0;
+
 		static int searchingTimes = 0 ;
+
 		clock_t begin;
 		clock_t end;
-		if(type == 2 ){
-			begin = clock();
-		}
+		statsVec.push_back(stats());
 
     while(!myfile.eof() && nextLineOfFile.compare("\n")){
 
@@ -117,34 +118,44 @@ void readingFromFile(string Filename, HashMap ** const HashArray, const Prefered
 
         int curveid = atoi(info.curve_id.c_str());
         initialCurveNoDublicatesVec.clear();
+
         createInitialCurveNoDublicates(dimension, info.curvePoints, info.noofPointsInCurve, v, initialCurveNoDublicatesVec);
         nameVector.push_back(info.curve_id);
+
         if(type == 1){ // is Input File
-
-            Operation(curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 1, queryOfVector, v, nameVector);
-        }
-        else{
-
-            queryOfVector.push_back(queryDetails());
-            queryOfVector[count].queryID = info.curve_id;
-
-            Operation(curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 2, queryOfVector, v, nameVector);
-
+            Operation(flagBasicFuncCall, curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 1, queryOfVector, v, nameVector);
+						flagBasicFuncCall = 1;
 		    }
+        else{
+					if(flagBasicFuncCall == 0 ){
+						searchingTimes = 0;
+					}
+
+          queryOfVector.push_back(queryDetails());
+          queryOfVector[count].queryID = info.curve_id;
+					if(details.optionalStatsIsHere)
+						begin = clock();
+
+          Operation(flagBasicFuncCall, curveid, dimension, HashArray, details, initialCurveNoDublicatesVec, info.noofPointsInCurve , info.curvePoints , 2, queryOfVector, v, nameVector);
+					flagBasicFuncCall = 1;
+
+					if(details.optionalStatsIsHere){
+						end = clock();
+						double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+						statsVec[searchingTimes].LSHTime.push_back(elapsed_secs);
+						statsVec[searchingTimes].LSHDistance.push_back(queryOfVector[searchingTimes].LSHDistance);
+						statsVec[searchingTimes].tTime = queryOfVector[searchingTimes].tTime;
+						searchingTimes++;
+					}
+		    }
+
         getline(myfile, nextLineOfFile);
+
         count++;
     }
-		if(type == 2 ) {
-			end = clock();
-			double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
-			statsVec[searchingTimes].LSHTime.push_back(elapsed_secs);
-
-			searchingTimes++;
-		}
-		queryOfVector.clear();
-		initialCurveNoDublicatesVec.clear();
-		curveNoOfPointsVec.clear();
+		//initialCurveNoDublicatesVec.clear();
+		//curveNoOfPointsVec.clear();
 }
 
 

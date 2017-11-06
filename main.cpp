@@ -31,7 +31,7 @@ void showPreferences(PreferedDetails& details);
 string checkForContinue();
 
 vector<stats> statsVec;
-vector<double> LSHTime;
+//vector<double> LSHTime;
 
 int main(int argc , char const *argv[]){
 
@@ -58,11 +58,14 @@ int main(int argc , char const *argv[]){
 			count = 0 ;
 		}
 		vector<queryDetails> queryOfVector;
+		vector<vector<double>> gridVector;
+		vector<string> nameVector;
+		int flagBasicFuncCall;
 		do{
 
-    	vector<vector<double>> gridVector;
-			vector<string> nameVector;
-
+			nameVector.clear();
+			gridVector.clear();
+			queryOfVector.clear();
       /*********************************************************
       //for each curve we do
       gridVector.push_back(double**array);
@@ -78,11 +81,14 @@ int main(int argc , char const *argv[]){
 				HashArray[i] = new HashMap();
 			}
 
-      readingFromFile(details.inputFile , HashArray, details, gridVector, nameVector, queryOfVector);
-			statsVec.push_back(stats());
-			readingFromFile(details.queryFile , HashArray, details, gridVector, nameVector, queryOfVector);
+			flagBasicFuncCall = 0;
+      readingFromFile(flagBasicFuncCall, details.inputFile , HashArray, details, gridVector, nameVector, queryOfVector);
+
+			flagBasicFuncCall = 0;
+			readingFromFile(flagBasicFuncCall, details.queryFile , HashArray, details, gridVector, nameVector, queryOfVector);
 
 
+	//		cout << "end query " << endl;
 	/*		cout << "The names of curves are: " << endl;
 			for(auto& x : nameVector){
 				cout << x << " , ";
@@ -102,13 +108,14 @@ int main(int argc , char const *argv[]){
 					delete HashArray[i];
 			}
 
-		}while(count < 100);
-		times++;
 
-		writingToOutputFile(details.outputFile, queryOfVector, statsVec, details);
+		}while(count < 100);
+			writingToOutputFile(details.outputFile, queryOfVector, statsVec, details);
+		times++;
 
 		answer = checkForContinue();
 	}
+		statsVec.clear();
 		return 0;
 }
 
